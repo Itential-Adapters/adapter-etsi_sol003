@@ -1,0 +1,50 @@
+{
+  "id": "string",
+  "managedObjectId": "string",
+  "rootCauseFaultyResource": {
+    "faultyResource": {
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "resourceId": "string",
+      "vimLevelResourceType": "string"
+    },
+    "faultyResourceType": "COMPUTE"
+  },
+  "alarmRaisedTime": "string",
+  "alarmChangedTime": "string",
+  "alarmClearedTime": "string",
+  "alarmAcknowledgedTime": "string",
+  "ackState": "UNACKNOWLEDGED",
+  "perceivedSeverity": "WARNING",
+  "eventTime": "string",
+  "eventType": "ENVIRONMENTAL_ALARM",
+  "faultType": "string",
+  "probableCause": "string",
+  "isRootCause": true,
+  "correlatedAlarmIds": [
+    "string",
+    "string",
+    "string",
+    "string",
+    "string",
+    "string",
+    "string",
+    "string"
+  ],
+  "faultDetails": [
+    "string",
+    "string",
+    "string",
+    "string",
+    "string",
+    "string"
+  ],
+  "_links": {
+    "self": {
+      "href": "string"
+    },
+    "objectInstance": {
+      "href": "string"
+    }
+  }
+}

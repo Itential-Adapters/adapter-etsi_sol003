@@ -1,0 +1,44 @@
+{
+  "id": "string",
+  "vnfSnapshotPkgUniqueId": "string",
+  "name": "string",
+  "checksum": "string",
+  "createdAt": "string",
+  "vnfSnapshotId": "string",
+  "vnfcSnapshotInfoIds": {},
+  "isFullSnapshot": false,
+  "vnfdInfo": {
+    "avnfdId": "string",
+    "vnfdPath": "string",
+    "checksum": "string",
+    "isEncrypted": false
+  },
+  "vnfsr": {
+    "recordPath": "string",
+    "checksum": "string",
+    "isEncrypted": true
+  },
+  "vnfcSnapshotImages": {},
+  "additionalArtifacts": {},
+  "state": "BUILDING",
+  "isCancelPending": true,
+  "failureDetails": {
+    "errorType": "CANCELLED",
+    "details": {
+      "type": "string",
+      "title": "string",
+      "status": 8,
+      "detail": "string",
+      "instance": "string"
+    }
+  },
+  "userDefinedData": {},
+  "_links": {
+    "self": {
+      "href": "string"
+    },
+    "packageContent": {
+      "href": "string"
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "id": "string",
+  "objectType": "string",
+  "objectInstanceIds": [
+    "string",
+    "string",
+    "string",
+    "string",
+    "string",
+    "string"
+  ],
+  "subObjectInstanceIds": [
+    "string"
+  ],
+  "criteria": {
+    "performanceMetric": [
+      "string",
+      "string",
+      "string",
+      "string",
+      "string"
+    ],
+    "performanceMetricGroup": [
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string"
+    ],
+    "collectionPeriod": 1,
+    "reportingPeriod": 8,
+    "reportingBoundary": "string"
+  },
+  "callbackUri": "string",
+  "reports": {
+    "href": "string",
+    "readyTime": "string",
+    "expiryTime": "string",
+    "fileSize": 2
+  },
+  "_links": {
+    "self": {
+      "href": "string"
+    },
+    "objects": [
+      {
+        "href": "string"
+      },
+      {
+        "href": "string"
+      },
+      {
+        "href": "string"
+      },
+      {
+        "href": "string"
+      },
+      {
+        "href": "string"
+      },
+      {
+        "href": "string"
+      },
+      {
+        "href": "string"
+      },
+      {
+        "href": "string"
+      }
+    ]
+  }
+}

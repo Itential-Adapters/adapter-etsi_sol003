@@ -1,0 +1,217 @@
+[
+  {
+    "id": "string",
+    "objectType": "string",
+    "objectInstanceIds": [
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string"
+    ],
+    "subObjectInstanceIds": [
+      "string",
+      "string",
+      "string"
+    ],
+    "criteria": {
+      "performanceMetric": [
+        "string"
+      ],
+      "performanceMetricGroup": [
+        "string",
+        "string",
+        "string"
+      ],
+      "collectionPeriod": 1,
+      "reportingPeriod": 9,
+      "reportingBoundary": "string"
+    },
+    "callbackUri": "string",
+    "reports": {
+      "href": "string",
+      "readyTime": "string",
+      "expiryTime": "string",
+      "fileSize": 8
+    },
+    "_links": {
+      "self": {
+        "href": "string"
+      },
+      "objects": [
+        {
+          "href": "string"
+        }
+      ]
+    }
+  },
+  {
+    "id": "string",
+    "objectType": "string",
+    "objectInstanceIds": [
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string"
+    ],
+    "subObjectInstanceIds": [
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string"
+    ],
+    "criteria": {
+      "performanceMetric": [
+        "string",
+        "string",
+        "string"
+      ],
+      "performanceMetricGroup": [
+        "string",
+        "string",
+        "string",
+        "string"
+      ],
+      "collectionPeriod": 2,
+      "reportingPeriod": 4,
+      "reportingBoundary": "string"
+    },
+    "callbackUri": "string",
+    "reports": {
+      "href": "string",
+      "readyTime": "string",
+      "expiryTime": "string",
+      "fileSize": 3
+    },
+    "_links": {
+      "self": {
+        "href": "string"
+      },
+      "objects": [
+        {
+          "href": "string"
+        },
+        {
+          "href": "string"
+        },
+        {
+          "href": "string"
+        },
+        {
+          "href": "string"
+        },
+        {
+          "href": "string"
+        },
+        {
+          "href": "string"
+        },
+        {
+          "href": "string"
+        },
+        {
+          "href": "string"
+        },
+        {
+          "href": "string"
+        },
+        {
+          "href": "string"
+        }
+      ]
+    }
+  },
+  {
+    "id": "string",
+    "objectType": "string",
+    "objectInstanceIds": [
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string"
+    ],
+    "subObjectInstanceIds": [
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string"
+    ],
+    "criteria": {
+      "performanceMetric": [
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string"
+      ],
+      "performanceMetricGroup": [
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string"
+      ],
+      "collectionPeriod": 5,
+      "reportingPeriod": 8,
+      "reportingBoundary": "string"
+    },
+    "callbackUri": "string",
+    "reports": {
+      "href": "string",
+      "readyTime": "string",
+      "expiryTime": "string",
+      "fileSize": 6
+    },
+    "_links": {
+      "self": {
+        "href": "string"
+      },
+      "objects": [
+        {
+          "href": "string"
+        },
+        {
+          "href": "string"
+        },
+        {
+          "href": "string"
+        },
+        {
+          "href": "string"
+        },
+        {
+          "href": "string"
+        }
+      ]
+    }
+  }
+]

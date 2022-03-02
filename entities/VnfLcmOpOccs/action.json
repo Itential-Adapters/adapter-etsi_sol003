@@ -1,0 +1,126 @@
+{
+  "actions": [
+    {
+      "name": "getVnfLcmOpOccs",
+      "protocol": "REST",
+      "method": "GET",
+      "entitypath": "{base_path}/{version}/vnflcm/v1/vnf_lcm_op_occs?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "sendGetBody": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": "mockdatafiles/getVnfLcmOpOccs-default.json"
+        }
+      ]
+    },
+    {
+      "name": "getVnfLcmOpOccsVnfLcmOpOccId",
+      "protocol": "REST",
+      "method": "GET",
+      "entitypath": "{base_path}/{version}/vnflcm/v1/vnf_lcm_op_occs/{pathv1}?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "sendGetBody": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": "mockdatafiles/getVnfLcmOpOccsVnfLcmOpOccId-default.json"
+        }
+      ]
+    },
+    {
+      "name": "postVnfLcmOpOccsVnfLcmOpOccIdRetry",
+      "protocol": "REST",
+      "method": "POST",
+      "entitypath": "{base_path}/{version}/vnflcm/v1/vnf_lcm_op_occs/{pathv1}/retry?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": ""
+        }
+      ]
+    },
+    {
+      "name": "postVnfLcmOpOccsVnfLcmOpOccIdRollback",
+      "protocol": "REST",
+      "method": "POST",
+      "entitypath": "{base_path}/{version}/vnflcm/v1/vnf_lcm_op_occs/{pathv1}/rollback?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": ""
+        }
+      ]
+    },
+    {
+      "name": "postVnfLcmOpOccsVnfLcmOpOccIdFail",
+      "protocol": "REST",
+      "method": "POST",
+      "entitypath": "{base_path}/{version}/vnflcm/v1/vnf_lcm_op_occs/{pathv1}/fail?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": "mockdatafiles/postVnfLcmOpOccsVnfLcmOpOccIdFail-default.json"
+        }
+      ]
+    },
+    {
+      "name": "postVnfLcmOpOccsVnfLcmOpOccIdCancel",
+      "protocol": "REST",
+      "method": "POST",
+      "entitypath": "{base_path}/{version}/vnflcm/v1/vnf_lcm_op_occs/{pathv1}/cancel?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": ""
+        }
+      ]
+    }
+  ]
+}

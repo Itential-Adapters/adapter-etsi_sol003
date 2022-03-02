@@ -1,0 +1,62 @@
+[
+  {
+    "id": "string",
+    "objectType": "string",
+    "objectInstanceId": "string",
+    "subObjectInstanceIds": [
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string"
+    ],
+    "criteria": {
+      "performanceMetric": "string",
+      "thresholdType": "SIMPLE",
+      "simpleThresholdDetails": {
+        "thresholdValue": 8,
+        "hysteresis": 7
+      }
+    },
+    "callbackUri": "string",
+    "_links": {
+      "self": {
+        "href": "string"
+      },
+      "object": {
+        "href": "string"
+      }
+    }
+  },
+  {
+    "id": "string",
+    "objectType": "string",
+    "objectInstanceId": "string",
+    "subObjectInstanceIds": [
+      "string",
+      "string",
+      "string",
+      "string"
+    ],
+    "criteria": {
+      "performanceMetric": "string",
+      "thresholdType": "SIMPLE",
+      "simpleThresholdDetails": {
+        "thresholdValue": 2,
+        "hysteresis": 6
+      }
+    },
+    "callbackUri": "string",
+    "_links": {
+      "self": {
+        "href": "string"
+      },
+      "object": {
+        "href": "string"
+      }
+    }
+  }
+]

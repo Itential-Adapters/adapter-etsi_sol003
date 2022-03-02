@@ -1,0 +1,10 @@
+{
+  "uriPrefix": "string",
+  "apiVersions": [
+    {
+      "version": "string",
+      "isDeprecated": false,
+      "retirementDate": "string"
+    }
+  ]
+}

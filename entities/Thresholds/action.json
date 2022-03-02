@@ -1,0 +1,106 @@
+{
+  "actions": [
+    {
+      "name": "postThresholds",
+      "protocol": "REST",
+      "method": "POST",
+      "entitypath": "{base_path}/{version}/vnfpm/v2/thresholds?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": "mockdatafiles/postThresholds-default.json"
+        }
+      ]
+    },
+    {
+      "name": "getThresholds",
+      "protocol": "REST",
+      "method": "GET",
+      "entitypath": "{base_path}/{version}/vnfpm/v2/thresholds?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "sendGetBody": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": "mockdatafiles/getThresholds-default.json"
+        }
+      ]
+    },
+    {
+      "name": "getThresholdsThresholdId",
+      "protocol": "REST",
+      "method": "GET",
+      "entitypath": "{base_path}/{version}/vnfpm/v2/thresholds/{pathv1}?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "sendGetBody": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": "mockdatafiles/getThresholdsThresholdId-default.json"
+        }
+      ]
+    },
+    {
+      "name": "patchThresholdsThresholdId",
+      "protocol": "REST",
+      "method": "PATCH",
+      "entitypath": "{base_path}/{version}/vnfpm/v2/thresholds/{pathv1}?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": "mockdatafiles/patchThresholdsThresholdId-default.json"
+        }
+      ]
+    },
+    {
+      "name": "deleteThresholdsThresholdId",
+      "protocol": "REST",
+      "method": "DELETE",
+      "entitypath": "{base_path}/{version}/vnfpm/v2/thresholds/{pathv1}?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": ""
+        }
+      ]
+    }
+  ]
+}

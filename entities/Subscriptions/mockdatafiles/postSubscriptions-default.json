@@ -1,0 +1,44 @@
+{
+  "id": "string",
+  "filter": {
+    "vimIds": [
+      "string",
+      "string",
+      "string",
+      "string",
+      "string"
+    ],
+    "resourceProviderIds": [
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string"
+    ],
+    "resourceTypes": [
+      "NETWORK",
+      "COMPUTE",
+      "STORAGE"
+    ],
+    "resourceGroupIds": [
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string"
+    ]
+  },
+  "callbackUri": "string",
+  "_links": {
+    "self": {
+      "href": "string"
+    }
+  }
+}

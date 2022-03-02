@@ -1,0 +1,45 @@
+{
+  "actions": [
+    {
+      "name": "postGrants",
+      "protocol": "REST",
+      "method": "POST",
+      "entitypath": "{base_path}/{version}/grant/v1/grants?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": "mockdatafiles/postGrants-default.json"
+        }
+      ]
+    },
+    {
+      "name": "getGrantsGrantId",
+      "protocol": "REST",
+      "method": "GET",
+      "entitypath": "{base_path}/{version}/grant/v1/grants/{pathv1}?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "sendGetBody": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": "mockdatafiles/getGrantsGrantId-default.json"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "actions": [
+    {
+      "name": "getOnboardedVnfPackages",
+      "protocol": "REST",
+      "method": "GET",
+      "entitypath": "{base_path}/{version}/vnfpkgm/v2/onboarded_vnf_packages?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "sendGetBody": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": "mockdatafiles/getOnboardedVnfPackages-default.json"
+        }
+      ]
+    },
+    {
+      "name": "getOnboardedVnfPackagesVnfdId",
+      "protocol": "REST",
+      "method": "GET",
+      "entitypath": "{base_path}/{version}/vnfpkgm/v2/onboarded_vnf_packages/{pathv1}?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "sendGetBody": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": "mockdatafiles/getOnboardedVnfPackagesVnfdId-default.json"
+        }
+      ]
+    },
+    {
+      "name": "getOnboardedVnfPackagesVnfdIdVnfd",
+      "protocol": "REST",
+      "method": "GET",
+      "entitypath": "{base_path}/{version}/vnfpkgm/v2/onboarded_vnf_packages/{pathv1}/vnfd?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "sendGetBody": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": ""
+        }
+      ]
+    },
+    {
+      "name": "getOnboardedVnfPackagesVnfdIdManifest",
+      "protocol": "REST",
+      "method": "GET",
+      "entitypath": "{base_path}/{version}/vnfpkgm/v2/onboarded_vnf_packages/{pathv1}/manifest?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "sendGetBody": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": ""
+        }
+      ]
+    },
+    {
+      "name": "getOnboardedVnfPackagesVnfdIdPackageContent",
+      "protocol": "REST",
+      "method": "GET",
+      "entitypath": "{base_path}/{version}/vnfpkgm/v2/onboarded_vnf_packages/{pathv1}/package_content?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "sendGetBody": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": ""
+        }
+      ]
+    },
+    {
+      "name": "getOnboardedVnfPackagesVnfdIdArtifacts",
+      "protocol": "REST",
+      "method": "GET",
+      "entitypath": "{base_path}/{version}/vnfpkgm/v2/onboarded_vnf_packages/{pathv1}/artifacts?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "sendGetBody": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": ""
+        }
+      ]
+    },
+    {
+      "name": "getOnboardedVnfPackagesVnfdIdArtifactsArtifactPath",
+      "protocol": "REST",
+      "method": "GET",
+      "entitypath": "{base_path}/{version}/vnfpkgm/v2/onboarded_vnf_packages/{pathv1}/artifacts/{pathv2}?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "sendGetBody": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": ""
+        }
+      ]
+    }
+  ]
+}

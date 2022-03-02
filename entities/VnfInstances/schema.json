@@ -1,0 +1,34 @@
+{
+  "$id": "schema.json",
+  "type": "object",
+  "schema": "http://json-schema.org/draft-07/schema#",
+  "translate": false,
+  "dynamicfields": true,
+  "properties": {
+    "ph_request_type": {
+      "type": "string",
+      "description": "type of request (internal to adapter)",
+      "default": "",
+      "enum": [
+        "postVnfInstances",
+        "getVnfInstances",
+        "getVnfInstancesVnfInstanceId",
+        "patchVnfInstancesVnfInstanceId",
+        "deleteVnfInstancesVnfInstanceId",
+        "postVnfInstancesVnfInstanceIdInstantiate",
+        "postVnfInstancesVnfInstanceIdScale",
+        "postVnfInstancesVnfInstanceIdScaleToLevel",
+        "postVnfInstancesVnfInstanceIdChangeFlavour",
+        "postVnfInstancesVnfInstanceIdTerminate",
+        "postVnfInstancesVnfInstanceIdHeal",
+        "postVnfInstancesVnfInstanceIdOperate",
+        "postVnfInstancesVnfInstanceIdChangeExtConn",
+        "postVnfInstancesVnfInstanceIdChangeVnfpkg",
+        "postVnfInstancesVnfInstanceIdCreateSnapshot",
+        "postVnfInstancesVnfInstanceIdRevertToSnapshot"
+      ],
+      "external_name": "ph_request_type"
+    }
+  },
+  "definitions": {}
+}

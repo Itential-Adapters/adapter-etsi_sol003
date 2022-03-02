@@ -1,0 +1,189 @@
+{
+  "errors": [],
+  "statistics": [
+    {
+      "owner": "errorJson",
+      "description": "Standard adapter errors available for use",
+      "value": 30
+    },
+    {
+      "owner": "packageJson",
+      "description": "Number of production dependencies",
+      "value": 13
+    },
+    {
+      "owner": "packageJson",
+      "description": "Number of development dependencies",
+      "value": 7
+    },
+    {
+      "owner": "packageJson",
+      "description": "Number of npm scripts",
+      "value": 23
+    },
+    {
+      "owner": "packageJson",
+      "description": "Runtime Library dependency",
+      "value": "^4.44.11"
+    },
+    {
+      "owner": "propertiesSchemaJson",
+      "description": "Adapter properties defined in the propertiesSchema file",
+      "value": 64
+    },
+    {
+      "owner": "adapterJS",
+      "description": "Lines of code generated in adapter.js",
+      "value": 1086
+    },
+    {
+      "owner": "adapterJS",
+      "description": "Number of Functions added to adapter.js",
+      "value": 5
+    },
+    {
+      "owner": "pronghornJson",
+      "description": "Number of Methods added to pronghorn.json",
+      "value": 5
+    },
+    {
+      "owner": "readmeMd",
+      "description": "Number of lines in the README.md",
+      "value": 688
+    },
+    {
+      "owner": "unitTestJS",
+      "description": "Number of lines of code in unit tests",
+      "value": 1379
+    },
+    {
+      "owner": "unitTestJS",
+      "description": "Number of unit tests",
+      "value": 55
+    },
+    {
+      "owner": "integrationTestJS",
+      "description": "Number of lines of code in integration tests",
+      "value": 607
+    },
+    {
+      "owner": "integrationTestJS",
+      "description": "Number of integration tests",
+      "value": 11
+    },
+    {
+      "owner": "actionJson",
+      "description": "Number of actions for ApiVersions entity",
+      "value": 1
+    },
+    {
+      "owner": "actionJson",
+      "description": "Number of actions for Subscriptions entity",
+      "value": 4
+    },
+    {
+      "owner": "actionJson",
+      "description": "Total number of actions",
+      "value": 5
+    },
+    {
+      "owner": "actionJson",
+      "description": "Total number of entities",
+      "value": 2
+    },
+    {
+      "owner": "schemaJson",
+      "description": "Number of schemas for ApiVersions entity",
+      "value": 1
+    },
+    {
+      "owner": "schemaJson",
+      "description": "Number of schemas for Subscriptions entity",
+      "value": 1
+    },
+    {
+      "owner": "schemaJson",
+      "description": "Total number of schemas",
+      "value": 2
+    },
+    {
+      "owner": "mockdata",
+      "description": "Number of mock data files for ApiVersions entity",
+      "value": 1
+    },
+    {
+      "owner": "mockdata",
+      "description": "Number of mock data files for Subscriptions entity",
+      "value": 3
+    },
+    {
+      "owner": "mockdata",
+      "description": "Total number of mock data files",
+      "value": 4
+    },
+    {
+      "owner": "actionJson",
+      "description": "Number of actions for .system entity",
+      "value": 2
+    },
+    {
+      "owner": "schemaJson",
+      "description": "Number of schemas for .system entity",
+      "value": 3
+    },
+    {
+      "owner": "mockdata",
+      "description": "Number of mock data files for .system entity",
+      "value": 2
+    },
+    {
+      "owner": "System",
+      "description": "System entity files",
+      "value": 6
+    },
+    {
+      "owner": "usecases",
+      "description": "Number of workflows",
+      "value": 0
+    },
+    {
+      "owner": "staticFile",
+      "description": "Number of lines of code in adapterBase.js",
+      "value": 1029
+    },
+    {
+      "owner": "staticFile",
+      "description": "Number of static files added",
+      "value": 35
+    },
+    {
+      "owner": "Overall",
+      "description": "Total lines of Code",
+      "value": 4101
+    },
+    {
+      "owner": "Overall",
+      "description": "Total Tests",
+      "value": 66
+    },
+    {
+      "owner": "Overall",
+      "description": "Total Files",
+      "value": 57
+    }
+  ],
+  "apiParsingReport": {
+    "no_mockdata": [
+      {
+        "fnName": "deleteSubscriptionsSubscriptionId",
+        "method": "delete",
+        "path": "/subscriptions/{subscriptionId}"
+      }
+    ],
+    "errors": [],
+    "warnings": [],
+    "callsTotal": 5,
+    "callsConverted": 5,
+    "no_mockdata_num": 1
+  }
+}

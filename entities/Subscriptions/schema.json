@@ -1,0 +1,33 @@
+{
+  "$id": "schema.json",
+  "type": "object",
+  "schema": "http://json-schema.org/draft-07/schema#",
+  "translate": true,
+  "dynamicfields": true,
+  "properties": {
+    "ph_request_type": {
+      "type": "string",
+      "description": "type of request (internal to adapter)",
+      "default": "postSubscriptions",
+      "enum": [
+        "postSubscriptions",
+        "getSubscriptions",
+        "getSubscriptionsSubscriptionId",
+        "deleteSubscriptionsSubscriptionId"
+      ],
+      "external_name": "ph_request_type"
+    },
+    "nextpageOpaqueMarker": {
+      "type": "string",
+      "description": "Marker to obtain the next page of a paged response. Shall be supported by the NFV-MANO functional entity if the entity supports alternative 2 (paging) according to clause...(description truncated)",
+      "parse": false,
+      "encode": false,
+      "encrypt": {
+        "type": "AES",
+        "key": ""
+      },
+      "external_name": "nextpage_opaque_marker"
+    }
+  },
+  "definitions": {}
+}

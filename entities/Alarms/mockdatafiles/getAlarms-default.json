@@ -1,0 +1,46 @@
+{
+  "id": "string",
+  "managedObjectId": "string",
+  "rootCauseFaultyResource": {
+    "faultyResource": {
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "resourceId": "string",
+      "vimLevelResourceType": "string"
+    },
+    "faultyResourceType": "NETWORK"
+  },
+  "alarmRaisedTime": "string",
+  "alarmChangedTime": "string",
+  "alarmClearedTime": "string",
+  "alarmAcknowledgedTime": "string",
+  "ackState": "ACKNOWLEDGED",
+  "perceivedSeverity": "WARNING",
+  "eventTime": "string",
+  "eventType": "COMMUNICATIONS_ALARM",
+  "faultType": "string",
+  "probableCause": "string",
+  "isRootCause": true,
+  "correlatedAlarmIds": [
+    "string",
+    "string",
+    "string",
+    "string",
+    "string",
+    "string",
+    "string",
+    "string",
+    "string"
+  ],
+  "faultDetails": [
+    "string"
+  ],
+  "_links": {
+    "self": {
+      "href": "string"
+    },
+    "objectInstance": {
+      "href": "string"
+    }
+  }
+}

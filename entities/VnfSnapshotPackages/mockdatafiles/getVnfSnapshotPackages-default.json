@@ -1,0 +1,178 @@
+[
+  {
+    "id": "string",
+    "vnfSnapshotPkgUniqueId": "string",
+    "name": "string",
+    "checksum": "string",
+    "createdAt": "string",
+    "vnfSnapshotId": "string",
+    "vnfcSnapshotInfoIds": {},
+    "isFullSnapshot": true,
+    "vnfdInfo": {
+      "avnfdId": "string",
+      "vnfdPath": "string",
+      "checksum": "string",
+      "isEncrypted": true
+    },
+    "vnfsr": {
+      "recordPath": "string",
+      "checksum": "string",
+      "isEncrypted": false
+    },
+    "vnfcSnapshotImages": {},
+    "additionalArtifacts": {},
+    "state": "AVAILABLE",
+    "isCancelPending": true,
+    "failureDetails": {
+      "errorType": "UPLOAD_ERROR",
+      "details": {
+        "type": "string",
+        "title": "string",
+        "status": 4,
+        "detail": "string",
+        "instance": "string"
+      }
+    },
+    "userDefinedData": {},
+    "_links": {
+      "self": {
+        "href": "string"
+      },
+      "packageContent": {
+        "href": "string"
+      }
+    }
+  },
+  {
+    "id": "string",
+    "vnfSnapshotPkgUniqueId": "string",
+    "name": "string",
+    "checksum": "string",
+    "createdAt": "string",
+    "vnfSnapshotId": "string",
+    "vnfcSnapshotInfoIds": {},
+    "isFullSnapshot": true,
+    "vnfdInfo": {
+      "avnfdId": "string",
+      "vnfdPath": "string",
+      "checksum": "string",
+      "isEncrypted": true
+    },
+    "vnfsr": {
+      "recordPath": "string",
+      "checksum": "string",
+      "isEncrypted": true
+    },
+    "vnfcSnapshotImages": {},
+    "additionalArtifacts": {},
+    "state": "ERROR_EXTRACTING",
+    "isCancelPending": false,
+    "failureDetails": {
+      "errorType": "UPLOAD_ERROR",
+      "details": {
+        "type": "string",
+        "title": "string",
+        "status": 8,
+        "detail": "string",
+        "instance": "string"
+      }
+    },
+    "userDefinedData": {},
+    "_links": {
+      "self": {
+        "href": "string"
+      },
+      "packageContent": {
+        "href": "string"
+      }
+    }
+  },
+  {
+    "id": "string",
+    "vnfSnapshotPkgUniqueId": "string",
+    "name": "string",
+    "checksum": "string",
+    "createdAt": "string",
+    "vnfSnapshotId": "string",
+    "vnfcSnapshotInfoIds": {},
+    "isFullSnapshot": true,
+    "vnfdInfo": {
+      "avnfdId": "string",
+      "vnfdPath": "string",
+      "checksum": "string",
+      "isEncrypted": false
+    },
+    "vnfsr": {
+      "recordPath": "string",
+      "checksum": "string",
+      "isEncrypted": true
+    },
+    "vnfcSnapshotImages": {},
+    "additionalArtifacts": {},
+    "state": "EXTRACTING",
+    "isCancelPending": true,
+    "failureDetails": {
+      "errorType": "EXTRACTION_ERROR",
+      "details": {
+        "type": "string",
+        "title": "string",
+        "status": 10,
+        "detail": "string",
+        "instance": "string"
+      }
+    },
+    "userDefinedData": {},
+    "_links": {
+      "self": {
+        "href": "string"
+      },
+      "packageContent": {
+        "href": "string"
+      }
+    }
+  },
+  {
+    "id": "string",
+    "vnfSnapshotPkgUniqueId": "string",
+    "name": "string",
+    "checksum": "string",
+    "createdAt": "string",
+    "vnfSnapshotId": "string",
+    "vnfcSnapshotInfoIds": {},
+    "isFullSnapshot": true,
+    "vnfdInfo": {
+      "avnfdId": "string",
+      "vnfdPath": "string",
+      "checksum": "string",
+      "isEncrypted": true
+    },
+    "vnfsr": {
+      "recordPath": "string",
+      "checksum": "string",
+      "isEncrypted": true
+    },
+    "vnfcSnapshotImages": {},
+    "additionalArtifacts": {},
+    "state": "BUILDING",
+    "isCancelPending": true,
+    "failureDetails": {
+      "errorType": "EXTRACTION_ERROR",
+      "details": {
+        "type": "string",
+        "title": "string",
+        "status": 10,
+        "detail": "string",
+        "instance": "string"
+      }
+    },
+    "userDefinedData": {},
+    "_links": {
+      "self": {
+        "href": "string"
+      },
+      "packageContent": {
+        "href": "string"
+      }
+    }
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "id": "string",
+  "name": "string",
+  "value": {},
+  "vnfInstanceId": "string",
+  "_links": {
+    "self": {
+      "href": "string"
+    },
+    "vnfInstance": {
+      "href": "string"
+    }
+  }
+}

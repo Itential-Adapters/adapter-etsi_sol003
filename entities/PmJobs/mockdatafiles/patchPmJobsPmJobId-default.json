@@ -1,0 +1,26 @@
+{
+  "callbackUri": "string",
+  "authentication": {
+    "authType": [
+      "TLS_CERT",
+      "BASIC",
+      "OAUTH2_CLIENT_CREDENTIALS",
+      "TLS_CERT",
+      "TLS_CERT",
+      "OAUTH2_CLIENT_CREDENTIALS",
+      "TLS_CERT",
+      "TLS_CERT",
+      "BASIC",
+      "TLS_CERT"
+    ],
+    "paramsBasic": {
+      "userName": "string",
+      "password": "string"
+    },
+    "paramsOauth2ClientCredentials": {
+      "clientId": "string",
+      "clientPassword": "string",
+      "tokenEndpoint": "string"
+    }
+  }
+}

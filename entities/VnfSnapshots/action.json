@@ -1,0 +1,127 @@
+{
+  "actions": [
+    {
+      "name": "postVnfSnapshots",
+      "protocol": "REST",
+      "method": "POST",
+      "entitypath": "{base_path}/{version}/vnflcm/v1/vnf_snapshots?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": "mockdatafiles/postVnfSnapshots-default.json"
+        }
+      ]
+    },
+    {
+      "name": "getVnfSnapshots",
+      "protocol": "REST",
+      "method": "GET",
+      "entitypath": "{base_path}/{version}/vnflcm/v1/vnf_snapshots?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "sendGetBody": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": "mockdatafiles/getVnfSnapshots-default.json"
+        }
+      ]
+    },
+    {
+      "name": "getVnfSnapshotsVnfSnapshotInfoId",
+      "protocol": "REST",
+      "method": "GET",
+      "entitypath": "{base_path}/{version}/vnflcm/v1/vnf_snapshots/{pathv1}?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "sendGetBody": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": "mockdatafiles/getVnfSnapshotsVnfSnapshotInfoId-default.json"
+        }
+      ]
+    },
+    {
+      "name": "patchVnfSnapshotsVnfSnapshotInfoId",
+      "protocol": "REST",
+      "method": "PATCH",
+      "entitypath": "{base_path}/{version}/vnflcm/v1/vnf_snapshots/{pathv1}?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": "mockdatafiles/patchVnfSnapshotsVnfSnapshotInfoId-default.json"
+        }
+      ]
+    },
+    {
+      "name": "deleteVnfSnapshotsVnfSnapshotInfoId",
+      "protocol": "REST",
+      "method": "DELETE",
+      "entitypath": "{base_path}/{version}/vnflcm/v1/vnf_snapshots/{pathv1}?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": ""
+        }
+      ]
+    },
+    {
+      "name": "getVnfSnapshotsVnfSnapshotInfoIdVnfStateSnapshot",
+      "protocol": "REST",
+      "method": "GET",
+      "entitypath": "{base_path}/{version}/vnflcm/v1/vnf_snapshots/{pathv1}/vnf_state_snapshot?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "sendGetBody": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": ""
+        }
+      ]
+    }
+  ]
+}

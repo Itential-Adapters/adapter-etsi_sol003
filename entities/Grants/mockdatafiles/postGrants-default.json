@@ -1,0 +1,1290 @@
+{
+  "id": "string",
+  "vnfInstanceId": "string",
+  "vnfLcmOpOccId": "string",
+  "vimConnectionInfo": {},
+  "zones": [
+    {
+      "id": "string",
+      "zoneId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string"
+    },
+    {
+      "id": "string",
+      "zoneId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string"
+    },
+    {
+      "id": "string",
+      "zoneId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string"
+    },
+    {
+      "id": "string",
+      "zoneId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string"
+    },
+    {
+      "id": "string",
+      "zoneId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string"
+    }
+  ],
+  "zoneGroups": [
+    {
+      "zoneId": [
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string"
+      ]
+    },
+    {
+      "zoneId": [
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string"
+      ]
+    }
+  ],
+  "addResources": [
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    },
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    },
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    }
+  ],
+  "tempResources": [
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    },
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    },
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    }
+  ],
+  "removeResources": [
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    },
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    },
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    },
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    },
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    },
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    }
+  ],
+  "updateResources": [
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    },
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    },
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    },
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    },
+    {
+      "resourceDefinitionId": "string",
+      "reservationId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "zoneId": "string",
+      "resourceGroupId": "string"
+    }
+  ],
+  "vimAssets": {
+    "computeResourceFlavours": [
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfdVirtualComputeDescId": "string",
+        "vimFlavourId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfdVirtualComputeDescId": "string",
+        "vimFlavourId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfdVirtualComputeDescId": "string",
+        "vimFlavourId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfdVirtualComputeDescId": "string",
+        "vimFlavourId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfdVirtualComputeDescId": "string",
+        "vimFlavourId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfdVirtualComputeDescId": "string",
+        "vimFlavourId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfdVirtualComputeDescId": "string",
+        "vimFlavourId": "string"
+      }
+    ],
+    "softwareImages": [
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfdSoftwareImageId": "string",
+        "vimSoftwareImageId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfdSoftwareImageId": "string",
+        "vimSoftwareImageId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfdSoftwareImageId": "string",
+        "vimSoftwareImageId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfdSoftwareImageId": "string",
+        "vimSoftwareImageId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfdSoftwareImageId": "string",
+        "vimSoftwareImageId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfdSoftwareImageId": "string",
+        "vimSoftwareImageId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfdSoftwareImageId": "string",
+        "vimSoftwareImageId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfdSoftwareImageId": "string",
+        "vimSoftwareImageId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfdSoftwareImageId": "string",
+        "vimSoftwareImageId": "string"
+      }
+    ],
+    "snapshotResources": [
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfSnapshotId": "string",
+        "vnfcSnapshotId": "string",
+        "storageSnapshotId": null,
+        "vimSnapshotResourceId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfSnapshotId": "string",
+        "vnfcSnapshotId": "string",
+        "storageSnapshotId": null,
+        "vimSnapshotResourceId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfSnapshotId": "string",
+        "vnfcSnapshotId": "string",
+        "storageSnapshotId": null,
+        "vimSnapshotResourceId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfSnapshotId": "string",
+        "vnfcSnapshotId": "string",
+        "storageSnapshotId": null,
+        "vimSnapshotResourceId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfSnapshotId": "string",
+        "vnfcSnapshotId": "string",
+        "storageSnapshotId": null,
+        "vimSnapshotResourceId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfSnapshotId": "string",
+        "vnfcSnapshotId": "string",
+        "storageSnapshotId": null,
+        "vimSnapshotResourceId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfSnapshotId": "string",
+        "vnfcSnapshotId": "string",
+        "storageSnapshotId": null,
+        "vimSnapshotResourceId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfSnapshotId": "string",
+        "vnfcSnapshotId": "string",
+        "storageSnapshotId": null,
+        "vimSnapshotResourceId": "string"
+      },
+      {
+        "vimConnectionId": "string",
+        "resourceProviderId": "string",
+        "vnfSnapshotId": "string",
+        "vnfcSnapshotId": "string",
+        "storageSnapshotId": null,
+        "vimSnapshotResourceId": "string"
+      }
+    ]
+  },
+  "extVirtualLinks": [
+    {
+      "id": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "resourceId": "string",
+      "extCps": [
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        }
+      ],
+      "extLinkPorts": [
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        }
+      ]
+    },
+    {
+      "id": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "resourceId": "string",
+      "extCps": [
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        }
+      ],
+      "extLinkPorts": [
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        }
+      ]
+    },
+    {
+      "id": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "resourceId": "string",
+      "extCps": [
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        }
+      ],
+      "extLinkPorts": [
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        }
+      ]
+    },
+    {
+      "id": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "resourceId": "string",
+      "extCps": [
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        }
+      ],
+      "extLinkPorts": [
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        }
+      ]
+    },
+    {
+      "id": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "resourceId": "string",
+      "extCps": [
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        }
+      ],
+      "extLinkPorts": [
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        }
+      ]
+    },
+    {
+      "id": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "resourceId": "string",
+      "extCps": [
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        },
+        {
+          "cpdId": "string",
+          "cpConfig": {}
+        }
+      ],
+      "extLinkPorts": [
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "id": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        }
+      ]
+    }
+  ],
+  "extManagedVirtualLinks": [
+    {
+      "id": "string",
+      "vnfVirtualLinkDescId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "resourceId": "string",
+      "vnfLinkPort": [
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        }
+      ],
+      "extManagedMultisiteVirtualLinkId": "string"
+    },
+    {
+      "id": "string",
+      "vnfVirtualLinkDescId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "resourceId": "string",
+      "vnfLinkPort": [
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        }
+      ],
+      "extManagedMultisiteVirtualLinkId": "string"
+    },
+    {
+      "id": "string",
+      "vnfVirtualLinkDescId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "resourceId": "string",
+      "vnfLinkPort": [
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        }
+      ],
+      "extManagedMultisiteVirtualLinkId": "string"
+    },
+    {
+      "id": "string",
+      "vnfVirtualLinkDescId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "resourceId": "string",
+      "vnfLinkPort": [
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        }
+      ],
+      "extManagedMultisiteVirtualLinkId": "string"
+    },
+    {
+      "id": "string",
+      "vnfVirtualLinkDescId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "resourceId": "string",
+      "vnfLinkPort": [
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        }
+      ],
+      "extManagedMultisiteVirtualLinkId": "string"
+    },
+    {
+      "id": "string",
+      "vnfVirtualLinkDescId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "resourceId": "string",
+      "vnfLinkPort": [
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        }
+      ],
+      "extManagedMultisiteVirtualLinkId": "string"
+    },
+    {
+      "id": "string",
+      "vnfVirtualLinkDescId": "string",
+      "vimConnectionId": "string",
+      "resourceProviderId": "string",
+      "resourceId": "string",
+      "vnfLinkPort": [
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        },
+        {
+          "vnfLinkPortId": "string",
+          "resourceHandle": {
+            "vimConnectionId": "string",
+            "resourceProviderId": "string",
+            "resourceId": "string",
+            "vimLevelResourceType": "string"
+          }
+        }
+      ],
+      "extManagedMultisiteVirtualLinkId": "string"
+    }
+  ],
+  "additionalParams": {},
+  "_links": {
+    "self": {
+      "href": "string"
+    },
+    "vnfLcmOpOcc": {
+      "href": "string"
+    },
+    "vnfInstance": {
+      "href": "string"
+    }
+  }
+}

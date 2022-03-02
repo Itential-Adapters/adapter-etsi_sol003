@@ -1,0 +1,25 @@
+{
+  "actions": [
+    {
+      "name": "getApiVersions",
+      "protocol": "REST",
+      "method": "GET",
+      "entitypath": "{base_path}/{version}/vrqan/v1/api_versions?{query}",
+      "requestSchema": "schema.json",
+      "responseSchema": "schema.json",
+      "timeout": 0,
+      "sendEmpty": false,
+      "sendGetBody": false,
+      "requestDatatype": "JSON",
+      "responseDatatype": "JSON",
+      "headers": {},
+      "responseObjects": [
+        {
+          "type": "default",
+          "key": "",
+          "mockFile": "mockdatafiles/getApiVersions-default.json"
+        }
+      ]
+    }
+  ]
+}

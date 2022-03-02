@@ -1,0 +1,147 @@
+[
+  {
+    "id": "string",
+    "filter": {
+      "vimIds": [
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string"
+      ],
+      "resourceProviderIds": [
+        "string",
+        "string",
+        "string",
+        "string",
+        "string"
+      ],
+      "resourceTypes": [
+        "STORAGE",
+        "COMPUTE",
+        "COMPUTE",
+        "STORAGE",
+        "STORAGE",
+        "COMPUTE",
+        "COMPUTE",
+        "COMPUTE",
+        "COMPUTE"
+      ],
+      "resourceGroupIds": [
+        "string",
+        "string",
+        "string",
+        "string"
+      ]
+    },
+    "callbackUri": "string",
+    "_links": {
+      "self": {
+        "href": "string"
+      }
+    }
+  },
+  {
+    "id": "string",
+    "filter": {
+      "vimIds": [
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string"
+      ],
+      "resourceProviderIds": [
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string"
+      ],
+      "resourceTypes": [
+        "COMPUTE"
+      ],
+      "resourceGroupIds": [
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string"
+      ]
+    },
+    "callbackUri": "string",
+    "_links": {
+      "self": {
+        "href": "string"
+      }
+    }
+  },
+  {
+    "id": "string",
+    "filter": {
+      "vimIds": [
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string"
+      ],
+      "resourceProviderIds": [
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string"
+      ],
+      "resourceTypes": [
+        "COMPUTE",
+        "NETWORK",
+        "COMPUTE",
+        "STORAGE",
+        "NETWORK",
+        "NETWORK",
+        "COMPUTE",
+        "NETWORK"
+      ],
+      "resourceGroupIds": [
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string",
+        "string"
+      ]
+    },
+    "callbackUri": "string",
+    "_links": {
+      "self": {
+        "href": "string"
+      }
+    }
+  }
+]

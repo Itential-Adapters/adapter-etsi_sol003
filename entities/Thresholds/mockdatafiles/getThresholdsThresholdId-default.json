@@ -1,0 +1,30 @@
+{
+  "id": "string",
+  "objectType": "string",
+  "objectInstanceId": "string",
+  "subObjectInstanceIds": [
+    "string",
+    "string",
+    "string",
+    "string",
+    "string",
+    "string"
+  ],
+  "criteria": {
+    "performanceMetric": "string",
+    "thresholdType": "SIMPLE",
+    "simpleThresholdDetails": {
+      "thresholdValue": 3,
+      "hysteresis": 5
+    }
+  },
+  "callbackUri": "string",
+  "_links": {
+    "self": {
+      "href": "string"
+    },
+    "object": {
+      "href": "string"
+    }
+  }
+}

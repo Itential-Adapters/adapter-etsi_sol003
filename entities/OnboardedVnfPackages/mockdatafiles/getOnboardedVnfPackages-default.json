@@ -1,0 +1,161 @@
+[
+  {
+    "id": "string",
+    "vnfdId": "string",
+    "vnfProvider": "string",
+    "vnfProductName": "string",
+    "vnfSoftwareVersion": "string",
+    "vnfdVersion": "string",
+    "compatibleSpecificationVersions": [
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string",
+      "string"
+    ],
+    "checksum": "string",
+    "packageSecurityOption": "OPTION_2",
+    "signingCertificate": "string",
+    "softwareImages": [
+      {
+        "id": "string",
+        "name": "string",
+        "provider": "string",
+        "version": "string",
+        "checksum": "string",
+        "isEncrypted": true,
+        "containerFormat": "ARI",
+        "diskFormat": "VHD",
+        "createdAt": "string",
+        "minDisk": 10,
+        "minRam": 9,
+        "size": 1,
+        "userMetadata": {},
+        "imagePath": "string",
+        "imageUri": "string"
+      },
+      {
+        "id": "string",
+        "name": "string",
+        "provider": "string",
+        "version": "string",
+        "checksum": "string",
+        "isEncrypted": false,
+        "containerFormat": "OVF",
+        "diskFormat": "AMI",
+        "createdAt": "string",
+        "minDisk": 3,
+        "minRam": 6,
+        "size": 5,
+        "userMetadata": {},
+        "imagePath": "string",
+        "imageUri": "string"
+      }
+    ],
+    "additionalArtifacts": [
+      {
+        "artifactPath": "string",
+        "artifactURI": [
+          "string",
+          "string",
+          "string",
+          "string"
+        ],
+        "checksum": "string",
+        "isEncrypted": false,
+        "nonManoArtifactSetId": "string",
+        "artifactClassification": "LICENSE",
+        "metadata": {}
+      },
+      {
+        "artifactPath": "string",
+        "artifactURI": [
+          "string",
+          "string",
+          "string"
+        ],
+        "checksum": "string",
+        "isEncrypted": true,
+        "nonManoArtifactSetId": "string",
+        "artifactClassification": "HISTORY",
+        "metadata": {}
+      },
+      {
+        "artifactPath": "string",
+        "artifactURI": [
+          "string",
+          "string",
+          "string",
+          "string",
+          "string",
+          "string"
+        ],
+        "checksum": "string",
+        "isEncrypted": true,
+        "nonManoArtifactSetId": "string",
+        "artifactClassification": "LICENSE",
+        "metadata": {}
+      },
+      {
+        "artifactPath": "string",
+        "artifactURI": [
+          "string",
+          "string",
+          "string",
+          "string",
+          "string",
+          "string",
+          "string",
+          "string"
+        ],
+        "checksum": "string",
+        "isEncrypted": false,
+        "nonManoArtifactSetId": "string",
+        "artifactClassification": "HISTORY",
+        "metadata": {}
+      },
+      {
+        "artifactPath": "string",
+        "artifactURI": [
+          "string",
+          "string",
+          "string",
+          "string",
+          "string"
+        ],
+        "checksum": "string",
+        "isEncrypted": false,
+        "nonManoArtifactSetId": "string",
+        "artifactClassification": "TESTING",
+        "metadata": {}
+      }
+    ],
+    "onboardingState": "CREATED",
+    "operationalState": "ENABLED",
+    "usageState": "NOT_IN_USE",
+    "vnfmInfo": "string",
+    "userDefinedData": {},
+    "onboardingFailureDetails": {
+      "type": "string",
+      "title": "string",
+      "status": 5,
+      "detail": "string",
+      "instance": "string"
+    },
+    "_links": {
+      "self": {
+        "href": "string"
+      },
+      "vnfd": {
+        "href": "string"
+      },
+      "packageContent": {
+        "href": "string"
+      }
+    }
+  }
+]
