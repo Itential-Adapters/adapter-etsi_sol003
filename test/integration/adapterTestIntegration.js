@@ -3,7 +3,8 @@
 // Set globals
 /* global describe it log pronghornProps */
 /* eslint no-unused-vars: warn */
-/* eslint no-underscore-dangle: warn */
+/* eslint no-underscore-dangle: warn  */
+/* eslint import/no-dynamic-require:warn */
 
 // include required items for testing & logging
 const assert = require('assert');
@@ -15,27 +16,38 @@ const { expect } = require('chai');
 const { use } = require('chai');
 const td = require('testdouble');
 const util = require('util');
-const pronghorn = require('../../pronghorn.json');
 
-pronghorn.methodsByName = pronghorn.methods.reduce((result, meth) => ({ ...result, [meth.name]: meth }), {});
 const anything = td.matchers.anything();
 
 // stub and attemptTimeout are used throughout the code so set them here
 let logLevel = 'none';
-const stub = true;
 const isRapidFail = false;
 const isSaveMockData = false;
-const attemptTimeout = 5000;
+
+// read in the properties from the sampleProperties files
+let adaptdir = __dirname;
+if (adaptdir.endsWith('/test/integration')) {
+  adaptdir = adaptdir.substring(0, adaptdir.length - 17);
+} else if (adaptdir.endsWith('/test/unit')) {
+  adaptdir = adaptdir.substring(0, adaptdir.length - 10);
+}
+const samProps = require(`${adaptdir}/sampleProperties.json`).properties;
 
 // these variables can be changed to run in integrated mode so easier to set them here
 // always check these in with bogus data!!!
-const host = 'replace.hostorip.here';
-const username = 'username';
-const password = 'password';
-const protocol = 'http';
-const port = 80;
-const sslenable = false;
-const sslinvalid = false;
+samProps.stub = true;
+samProps.host = 'replace.hostorip.here';
+samProps.authentication.username = 'username';
+samProps.authentication.password = 'password';
+samProps.protocol = 'http';
+samProps.port = 80;
+samProps.ssl.enabled = false;
+samProps.ssl.accept_invalid_cert = false;
+if (samProps.request.attempt_timeout < 30000) {
+  samProps.request.attempt_timeout = 30000;
+}
+const attemptTimeout = samProps.request.attempt_timeout;
+const { stub } = samProps;
 
 // these are the adapter properties. You generally should not need to alter
 // any of these after they are initially set up
@@ -47,102 +59,7 @@ global.pronghornProps = {
     adapters: [{
       id: 'Test-etsi_sol003',
       type: 'EtsiSol003',
-      properties: {
-        host,
-        port,
-        base_path: '/',
-        version: '',
-        cache_location: 'none',
-        encode_pathvars: true,
-        save_metric: false,
-        stub,
-        protocol,
-        authentication: {
-          auth_method: 'request_token',
-          username,
-          password,
-          token: '',
-          invalid_token_error: 401,
-          token_timeout: 1800000,
-          token_cache: 'local',
-          auth_field: 'header.headers.Authorization',
-          auth_field_format: 'Bearer {token}',
-          auth_logging: false,
-          client_id: '',
-          client_secret: '',
-          grant_type: ''
-        },
-        healthcheck: {
-          type: 'none',
-          frequency: 60000,
-          query_object: {}
-        },
-        throttle: {
-          throttle_enabled: false,
-          number_pronghorns: 1,
-          sync_async: 'sync',
-          max_in_queue: 1000,
-          concurrent_max: 1,
-          expire_timeout: 0,
-          avg_runtime: 200,
-          priorities: [
-            {
-              value: 0,
-              percent: 100
-            }
-          ]
-        },
-        request: {
-          number_redirects: 0,
-          number_retries: 3,
-          limit_retry_error: [0],
-          failover_codes: [],
-          attempt_timeout: attemptTimeout,
-          global_request: {
-            payload: {},
-            uriOptions: {},
-            addlHeaders: {},
-            authData: {}
-          },
-          healthcheck_on_timeout: true,
-          return_raw: true,
-          archiving: false,
-          return_request: false
-        },
-        proxy: {
-          enabled: false,
-          host: '',
-          port: 1,
-          protocol: 'http',
-          username: '',
-          password: ''
-        },
-        ssl: {
-          ecdhCurve: '',
-          enabled: sslenable,
-          accept_invalid_cert: sslinvalid,
-          ca_file: '',
-          key_file: '',
-          cert_file: '',
-          secure_protocol: '',
-          ciphers: ''
-        },
-        mongo: {
-          host: '',
-          port: 0,
-          database: '',
-          username: '',
-          password: '',
-          replSet: '',
-          db_ssl: {
-            enabled: false,
-            accept_invalid_cert: false,
-            ca_file: '',
-            key_file: '',
-            cert_file: ''
-          }
-        }
-      }
+      properties: samProps
     }]
   }
 };
@@ -426,37 +343,29 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     -----------------------------------------------------------------------
     -----------------------------------------------------------------------
     */
-    let skipCount = 0;
-
     describe('#getApiVersions - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getApiVersions.task) {
-          try {
-            a.getApiVersions((data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.uriPrefix);
-                  assert.equal(true, Array.isArray(data.response.apiVersions));
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('ApiVersions', 'getApiVersions', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getApiVersions((data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.uriPrefix);
+                assert.equal(true, Array.isArray(data.response.apiVersions));
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getApiVersions task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('ApiVersions', 'getApiVersions', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -466,228 +375,192 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#postSubscriptions - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.postSubscriptions.task) {
-          try {
-            a.postSubscriptions(subscriptionsPostSubscriptionsBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('object', typeof data.response.filter);
-                  assert.equal('string', data.response.callbackUri);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                subscriptionsSubscriptionId = data.response.id;
-                saveMockData('Subscriptions', 'postSubscriptions', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postSubscriptions(subscriptionsPostSubscriptionsBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('object', typeof data.response.filter);
+                assert.equal('string', data.response.callbackUri);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postSubscriptions task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              subscriptionsSubscriptionId = data.response.id;
+              saveMockData('Subscriptions', 'postSubscriptions', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getSubscriptions - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getSubscriptions.task) {
-          try {
-            a.getSubscriptions(null, null, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('object', typeof data.response[0]);
-                  assert.equal('object', typeof data.response[1]);
-                  assert.equal('object', typeof data.response[2]);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Subscriptions', 'getSubscriptions', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getSubscriptions(null, null, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('object', typeof data.response[0]);
+                assert.equal('object', typeof data.response[1]);
+                assert.equal('object', typeof data.response[2]);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getSubscriptions task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Subscriptions', 'getSubscriptions', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getSubscriptionsSubscriptionId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getSubscriptionsSubscriptionId.task) {
-          try {
-            a.getSubscriptionsSubscriptionId(subscriptionsSubscriptionId, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('object', typeof data.response.filter);
-                  assert.equal('string', data.response.callbackUri);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Subscriptions', 'getSubscriptionsSubscriptionId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getSubscriptionsSubscriptionId(subscriptionsSubscriptionId, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('object', typeof data.response.filter);
+                assert.equal('string', data.response.callbackUri);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getSubscriptionsSubscriptionId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Subscriptions', 'getSubscriptionsSubscriptionId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#deleteSubscriptionsSubscriptionId - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.deleteSubscriptionsSubscriptionId.task) {
-          try {
-            a.deleteSubscriptionsSubscriptionId(subscriptionsSubscriptionId, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Subscriptions', 'deleteSubscriptionsSubscriptionId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.deleteSubscriptionsSubscriptionId(subscriptionsSubscriptionId, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('deleteSubscriptionsSubscriptionId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Subscriptions', 'deleteSubscriptionsSubscriptionId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getAlarms - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getAlarms.task) {
-          try {
-            a.getAlarms(null, null, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('string', data.response.managedObjectId);
-                  assert.equal('object', typeof data.response.rootCauseFaultyResource);
-                  assert.equal('string', data.response.alarmRaisedTime);
-                  assert.equal('string', data.response.alarmChangedTime);
-                  assert.equal('string', data.response.alarmClearedTime);
-                  assert.equal('string', data.response.alarmAcknowledgedTime);
-                  assert.equal('ACKNOWLEDGED', data.response.ackState);
-                  assert.equal('WARNING', data.response.perceivedSeverity);
-                  assert.equal('string', data.response.eventTime);
-                  assert.equal('COMMUNICATIONS_ALARM', data.response.eventType);
-                  assert.equal('string', data.response.faultType);
-                  assert.equal('string', data.response.probableCause);
-                  assert.equal(true, data.response.isRootCause);
-                  assert.equal(true, Array.isArray(data.response.correlatedAlarmIds));
-                  assert.equal(true, Array.isArray(data.response.faultDetails));
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Alarms', 'getAlarms', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getAlarms(null, null, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('string', data.response.managedObjectId);
+                assert.equal('object', typeof data.response.rootCauseFaultyResource);
+                assert.equal('string', data.response.alarmRaisedTime);
+                assert.equal('string', data.response.alarmChangedTime);
+                assert.equal('string', data.response.alarmClearedTime);
+                assert.equal('string', data.response.alarmAcknowledgedTime);
+                assert.equal('ACKNOWLEDGED', data.response.ackState);
+                assert.equal('WARNING', data.response.perceivedSeverity);
+                assert.equal('string', data.response.eventTime);
+                assert.equal('COMMUNICATIONS_ALARM', data.response.eventType);
+                assert.equal('string', data.response.faultType);
+                assert.equal('string', data.response.probableCause);
+                assert.equal(true, data.response.isRootCause);
+                assert.equal(true, Array.isArray(data.response.correlatedAlarmIds));
+                assert.equal(true, Array.isArray(data.response.faultDetails));
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getAlarms task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Alarms', 'getAlarms', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getAlarmsAlarmId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getAlarmsAlarmId.task) {
-          try {
-            a.getAlarmsAlarmId('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('string', data.response.managedObjectId);
-                  assert.equal('object', typeof data.response.rootCauseFaultyResource);
-                  assert.equal('string', data.response.alarmRaisedTime);
-                  assert.equal('string', data.response.alarmChangedTime);
-                  assert.equal('string', data.response.alarmClearedTime);
-                  assert.equal('string', data.response.alarmAcknowledgedTime);
-                  assert.equal('UNACKNOWLEDGED', data.response.ackState);
-                  assert.equal('WARNING', data.response.perceivedSeverity);
-                  assert.equal('string', data.response.eventTime);
-                  assert.equal('ENVIRONMENTAL_ALARM', data.response.eventType);
-                  assert.equal('string', data.response.faultType);
-                  assert.equal('string', data.response.probableCause);
-                  assert.equal(true, data.response.isRootCause);
-                  assert.equal(true, Array.isArray(data.response.correlatedAlarmIds));
-                  assert.equal(true, Array.isArray(data.response.faultDetails));
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Alarms', 'getAlarmsAlarmId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getAlarmsAlarmId('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('string', data.response.managedObjectId);
+                assert.equal('object', typeof data.response.rootCauseFaultyResource);
+                assert.equal('string', data.response.alarmRaisedTime);
+                assert.equal('string', data.response.alarmChangedTime);
+                assert.equal('string', data.response.alarmClearedTime);
+                assert.equal('string', data.response.alarmAcknowledgedTime);
+                assert.equal('UNACKNOWLEDGED', data.response.ackState);
+                assert.equal('WARNING', data.response.perceivedSeverity);
+                assert.equal('string', data.response.eventTime);
+                assert.equal('ENVIRONMENTAL_ALARM', data.response.eventType);
+                assert.equal('string', data.response.faultType);
+                assert.equal('string', data.response.probableCause);
+                assert.equal(true, data.response.isRootCause);
+                assert.equal(true, Array.isArray(data.response.correlatedAlarmIds));
+                assert.equal(true, Array.isArray(data.response.faultDetails));
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getAlarmsAlarmId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Alarms', 'getAlarmsAlarmId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -696,197 +569,161 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#patchAlarmsAlarmId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.patchAlarmsAlarmId.task) {
-          try {
-            a.patchAlarmsAlarmId('fakedata', alarmsPatchAlarmsAlarmIdBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('success', data.response);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Alarms', 'patchAlarmsAlarmId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.patchAlarmsAlarmId('fakedata', alarmsPatchAlarmsAlarmIdBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('success', data.response);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('patchAlarmsAlarmId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Alarms', 'patchAlarmsAlarmId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getIndicators - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getIndicators.task) {
-          try {
-            a.getIndicators(null, null, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('object', typeof data.response[0]);
-                  assert.equal('object', typeof data.response[1]);
-                  assert.equal('object', typeof data.response[2]);
-                  assert.equal('object', typeof data.response[3]);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Indicators', 'getIndicators', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getIndicators(null, null, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('object', typeof data.response[0]);
+                assert.equal('object', typeof data.response[1]);
+                assert.equal('object', typeof data.response[2]);
+                assert.equal('object', typeof data.response[3]);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getIndicators task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Indicators', 'getIndicators', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getIndicatorsVnfInstanceId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getIndicatorsVnfInstanceId.task) {
-          try {
-            a.getIndicatorsVnfInstanceId('fakedata', null, null, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('object', typeof data.response[0]);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Indicators', 'getIndicatorsVnfInstanceId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getIndicatorsVnfInstanceId('fakedata', null, null, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('object', typeof data.response[0]);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getIndicatorsVnfInstanceId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Indicators', 'getIndicatorsVnfInstanceId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getIndicatorsVnfInstanceIdIndicatorId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getIndicatorsVnfInstanceIdIndicatorId.task) {
-          try {
-            a.getIndicatorsVnfInstanceIdIndicatorId('fakedata', 'fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('string', data.response.name);
-                  assert.equal('object', typeof data.response.value);
-                  assert.equal('string', data.response.vnfInstanceId);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Indicators', 'getIndicatorsVnfInstanceIdIndicatorId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getIndicatorsVnfInstanceIdIndicatorId('fakedata', 'fakedata', (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('string', data.response.name);
+                assert.equal('object', typeof data.response.value);
+                assert.equal('string', data.response.vnfInstanceId);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getIndicatorsVnfInstanceIdIndicatorId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Indicators', 'getIndicatorsVnfInstanceIdIndicatorId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getIndicatorsSubscriptionsSubscriptionId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getIndicatorsSubscriptionsSubscriptionId.task) {
-          try {
-            a.getIndicatorsSubscriptionsSubscriptionId('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('object', typeof data.response.filter);
-                  assert.equal('string', data.response.callbackUri);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Indicators', 'getIndicatorsSubscriptionsSubscriptionId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getIndicatorsSubscriptionsSubscriptionId('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('object', typeof data.response.filter);
+                assert.equal('string', data.response.callbackUri);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getIndicatorsSubscriptionsSubscriptionId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Indicators', 'getIndicatorsSubscriptionsSubscriptionId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#deleteIndicatorsSubscriptionsSubscriptionId - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.deleteIndicatorsSubscriptionsSubscriptionId.task) {
-          try {
-            a.deleteIndicatorsSubscriptionsSubscriptionId('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Indicators', 'deleteIndicatorsSubscriptionsSubscriptionId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.deleteIndicatorsSubscriptionsSubscriptionId('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('deleteIndicatorsSubscriptionsSubscriptionId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Indicators', 'deleteIndicatorsSubscriptionsSubscriptionId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -895,122 +732,104 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#postVnfInstances - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.postVnfInstances.task) {
-          try {
-            a.postVnfInstances(vnfInstancesPostVnfInstancesBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('string', data.response.vnfInstanceName);
-                  assert.equal('string', data.response.vnfInstanceDescription);
-                  assert.equal('string', data.response.vnfdId);
-                  assert.equal('string', data.response.vnfProvider);
-                  assert.equal('string', data.response.vnfProductName);
-                  assert.equal('string', data.response.vnfSoftwareVersion);
-                  assert.equal('string', data.response.vnfdVersion);
-                  assert.equal('object', typeof data.response.vnfConfigurableProperties);
-                  assert.equal('object', typeof data.response.vimConnectionInfo);
-                  assert.equal('NOT_INSTANTIATED', data.response.instantiationState);
-                  assert.equal('object', typeof data.response.instantiatedVnfInfo);
-                  assert.equal('object', typeof data.response.metadata);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfInstances', 'postVnfInstances', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfInstances(vnfInstancesPostVnfInstancesBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('string', data.response.vnfInstanceName);
+                assert.equal('string', data.response.vnfInstanceDescription);
+                assert.equal('string', data.response.vnfdId);
+                assert.equal('string', data.response.vnfProvider);
+                assert.equal('string', data.response.vnfProductName);
+                assert.equal('string', data.response.vnfSoftwareVersion);
+                assert.equal('string', data.response.vnfdVersion);
+                assert.equal('object', typeof data.response.vnfConfigurableProperties);
+                assert.equal('object', typeof data.response.vimConnectionInfo);
+                assert.equal('NOT_INSTANTIATED', data.response.instantiationState);
+                assert.equal('object', typeof data.response.instantiatedVnfInfo);
+                assert.equal('object', typeof data.response.metadata);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfInstances task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfInstances', 'postVnfInstances', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfInstances - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getVnfInstances.task) {
-          try {
-            a.getVnfInstances(null, null, null, null, null, null, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('object', typeof data.response[0]);
-                  assert.equal('object', typeof data.response[1]);
-                  assert.equal('object', typeof data.response[2]);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfInstances', 'getVnfInstances', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfInstances(null, null, null, null, null, null, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('object', typeof data.response[0]);
+                assert.equal('object', typeof data.response[1]);
+                assert.equal('object', typeof data.response[2]);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfInstances task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfInstances', 'getVnfInstances', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfInstancesVnfInstanceId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getVnfInstancesVnfInstanceId.task) {
-          try {
-            a.getVnfInstancesVnfInstanceId('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('string', data.response.vnfInstanceName);
-                  assert.equal('string', data.response.vnfInstanceDescription);
-                  assert.equal('string', data.response.vnfdId);
-                  assert.equal('string', data.response.vnfProvider);
-                  assert.equal('string', data.response.vnfProductName);
-                  assert.equal('string', data.response.vnfSoftwareVersion);
-                  assert.equal('string', data.response.vnfdVersion);
-                  assert.equal('object', typeof data.response.vnfConfigurableProperties);
-                  assert.equal('object', typeof data.response.vimConnectionInfo);
-                  assert.equal('INSTANTIATED', data.response.instantiationState);
-                  assert.equal('object', typeof data.response.instantiatedVnfInfo);
-                  assert.equal('object', typeof data.response.metadata);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfInstances', 'getVnfInstancesVnfInstanceId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfInstancesVnfInstanceId('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('string', data.response.vnfInstanceName);
+                assert.equal('string', data.response.vnfInstanceDescription);
+                assert.equal('string', data.response.vnfdId);
+                assert.equal('string', data.response.vnfProvider);
+                assert.equal('string', data.response.vnfProductName);
+                assert.equal('string', data.response.vnfSoftwareVersion);
+                assert.equal('string', data.response.vnfdVersion);
+                assert.equal('object', typeof data.response.vnfConfigurableProperties);
+                assert.equal('object', typeof data.response.vimConnectionInfo);
+                assert.equal('INSTANTIATED', data.response.instantiationState);
+                assert.equal('object', typeof data.response.instantiatedVnfInfo);
+                assert.equal('object', typeof data.response.metadata);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfInstancesVnfInstanceId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfInstances', 'getVnfInstancesVnfInstanceId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -1025,63 +844,51 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#patchVnfInstancesVnfInstanceId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.patchVnfInstancesVnfInstanceId.task) {
-          try {
-            a.patchVnfInstancesVnfInstanceId('fakedata', vnfInstancesPatchVnfInstancesVnfInstanceIdBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('success', data.response);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfInstances', 'patchVnfInstancesVnfInstanceId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.patchVnfInstancesVnfInstanceId('fakedata', vnfInstancesPatchVnfInstancesVnfInstanceIdBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('success', data.response);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('patchVnfInstancesVnfInstanceId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfInstances', 'patchVnfInstancesVnfInstanceId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#deleteVnfInstancesVnfInstanceId - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.deleteVnfInstancesVnfInstanceId.task) {
-          try {
-            a.deleteVnfInstancesVnfInstanceId('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfInstances', 'deleteVnfInstancesVnfInstanceId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.deleteVnfInstancesVnfInstanceId('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('deleteVnfInstancesVnfInstanceId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfInstances', 'deleteVnfInstancesVnfInstanceId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -1090,32 +897,26 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#postVnfInstancesVnfInstanceIdInstantiate - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.postVnfInstancesVnfInstanceIdInstantiate.task) {
-          try {
-            a.postVnfInstancesVnfInstanceIdInstantiate('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdInstantiateBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdInstantiate', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfInstancesVnfInstanceIdInstantiate('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdInstantiateBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfInstancesVnfInstanceIdInstantiate task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdInstantiate', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -1125,32 +926,26 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#postVnfInstancesVnfInstanceIdScale - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.postVnfInstancesVnfInstanceIdScale.task) {
-          try {
-            a.postVnfInstancesVnfInstanceIdScale('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdScaleBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdScale', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfInstancesVnfInstanceIdScale('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdScaleBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfInstancesVnfInstanceIdScale task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdScale', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -1167,32 +962,26 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#postVnfInstancesVnfInstanceIdScaleToLevel - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.postVnfInstancesVnfInstanceIdScaleToLevel.task) {
-          try {
-            a.postVnfInstancesVnfInstanceIdScaleToLevel('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdScaleToLevelBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdScaleToLevel', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfInstancesVnfInstanceIdScaleToLevel('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdScaleToLevelBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfInstancesVnfInstanceIdScaleToLevel task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdScaleToLevel', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -1201,32 +990,26 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#postVnfInstancesVnfInstanceIdChangeFlavour - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.postVnfInstancesVnfInstanceIdChangeFlavour.task) {
-          try {
-            a.postVnfInstancesVnfInstanceIdChangeFlavour('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdChangeFlavourBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdChangeFlavour', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfInstancesVnfInstanceIdChangeFlavour('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdChangeFlavourBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfInstancesVnfInstanceIdChangeFlavour task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdChangeFlavour', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -1235,32 +1018,26 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#postVnfInstancesVnfInstanceIdTerminate - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.postVnfInstancesVnfInstanceIdTerminate.task) {
-          try {
-            a.postVnfInstancesVnfInstanceIdTerminate('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdTerminateBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdTerminate', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfInstancesVnfInstanceIdTerminate('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdTerminateBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfInstancesVnfInstanceIdTerminate task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdTerminate', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -1270,32 +1047,26 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#postVnfInstancesVnfInstanceIdHeal - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.postVnfInstancesVnfInstanceIdHeal.task) {
-          try {
-            a.postVnfInstancesVnfInstanceIdHeal('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdHealBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdHeal', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfInstancesVnfInstanceIdHeal('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdHealBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfInstancesVnfInstanceIdHeal task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdHeal', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -1304,32 +1075,26 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#postVnfInstancesVnfInstanceIdOperate - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.postVnfInstancesVnfInstanceIdOperate.task) {
-          try {
-            a.postVnfInstancesVnfInstanceIdOperate('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdOperateBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdOperate', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfInstancesVnfInstanceIdOperate('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdOperateBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfInstancesVnfInstanceIdOperate task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdOperate', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -1340,32 +1105,26 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#postVnfInstancesVnfInstanceIdChangeExtConn - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.postVnfInstancesVnfInstanceIdChangeExtConn.task) {
-          try {
-            a.postVnfInstancesVnfInstanceIdChangeExtConn('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdChangeExtConnBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdChangeExtConn', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfInstancesVnfInstanceIdChangeExtConn('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdChangeExtConnBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfInstancesVnfInstanceIdChangeExtConn task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdChangeExtConn', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -1374,64 +1133,52 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#postVnfInstancesVnfInstanceIdChangeVnfpkg - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.postVnfInstancesVnfInstanceIdChangeVnfpkg.task) {
-          try {
-            a.postVnfInstancesVnfInstanceIdChangeVnfpkg('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdChangeVnfpkgBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdChangeVnfpkg', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfInstancesVnfInstanceIdChangeVnfpkg('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdChangeVnfpkgBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfInstancesVnfInstanceIdChangeVnfpkg task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdChangeVnfpkg', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     const vnfInstancesPostVnfInstancesVnfInstanceIdCreateSnapshotBodyParam = {};
     describe('#postVnfInstancesVnfInstanceIdCreateSnapshot - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.postVnfInstancesVnfInstanceIdCreateSnapshot.task) {
-          try {
-            a.postVnfInstancesVnfInstanceIdCreateSnapshot('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdCreateSnapshotBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdCreateSnapshot', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfInstancesVnfInstanceIdCreateSnapshot('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdCreateSnapshotBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfInstancesVnfInstanceIdCreateSnapshot task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdCreateSnapshot', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -1440,269 +1187,227 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#postVnfInstancesVnfInstanceIdRevertToSnapshot - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.postVnfInstancesVnfInstanceIdRevertToSnapshot.task) {
-          try {
-            a.postVnfInstancesVnfInstanceIdRevertToSnapshot('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdRevertToSnapshotBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdRevertToSnapshot', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfInstancesVnfInstanceIdRevertToSnapshot('fakedata', vnfInstancesPostVnfInstancesVnfInstanceIdRevertToSnapshotBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfInstancesVnfInstanceIdRevertToSnapshot task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfInstances', 'postVnfInstancesVnfInstanceIdRevertToSnapshot', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfLcmOpOccs - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getVnfLcmOpOccs.task) {
-          try {
-            a.getVnfLcmOpOccs(null, null, null, null, null, null, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('COMPLETED', data.response.operationState);
-                  assert.equal('string', data.response.stateEnteredTime);
-                  assert.equal('string', data.response.startTime);
-                  assert.equal('string', data.response.vnfInstanceId);
-                  assert.equal('string', data.response.grantId);
-                  assert.equal('OPERATE', data.response.operation);
-                  assert.equal(false, data.response.isAutomaticInvocation);
-                  assert.equal('object', typeof data.response.operationParams);
-                  assert.equal(false, data.response.isCancelPending);
-                  assert.equal('GRACEFUL', data.response.cancelMode);
-                  assert.equal('object', typeof data.response.error);
-                  assert.equal('object', typeof data.response.resourceChanges);
-                  assert.equal('object', typeof data.response.changedInfo);
-                  assert.equal(true, Array.isArray(data.response.changedExtConnectivity));
-                  assert.equal('object', typeof data.response.modificationsTriggeredByVnfPkgChange);
-                  assert.equal('string', data.response.vnfSnapshotInfoId);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfLcmOpOccs', 'getVnfLcmOpOccs', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfLcmOpOccs(null, null, null, null, null, null, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('COMPLETED', data.response.operationState);
+                assert.equal('string', data.response.stateEnteredTime);
+                assert.equal('string', data.response.startTime);
+                assert.equal('string', data.response.vnfInstanceId);
+                assert.equal('string', data.response.grantId);
+                assert.equal('OPERATE', data.response.operation);
+                assert.equal(false, data.response.isAutomaticInvocation);
+                assert.equal('object', typeof data.response.operationParams);
+                assert.equal(false, data.response.isCancelPending);
+                assert.equal('GRACEFUL', data.response.cancelMode);
+                assert.equal('object', typeof data.response.error);
+                assert.equal('object', typeof data.response.resourceChanges);
+                assert.equal('object', typeof data.response.changedInfo);
+                assert.equal(true, Array.isArray(data.response.changedExtConnectivity));
+                assert.equal('object', typeof data.response.modificationsTriggeredByVnfPkgChange);
+                assert.equal('string', data.response.vnfSnapshotInfoId);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfLcmOpOccs task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfLcmOpOccs', 'getVnfLcmOpOccs', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfLcmOpOccsVnfLcmOpOccId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getVnfLcmOpOccsVnfLcmOpOccId.task) {
-          try {
-            a.getVnfLcmOpOccsVnfLcmOpOccId('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('STARTING', data.response.operationState);
-                  assert.equal('string', data.response.stateEnteredTime);
-                  assert.equal('string', data.response.startTime);
-                  assert.equal('string', data.response.vnfInstanceId);
-                  assert.equal('string', data.response.grantId);
-                  assert.equal('REVERT_TO_SNAPSHOT', data.response.operation);
-                  assert.equal(true, data.response.isAutomaticInvocation);
-                  assert.equal('object', typeof data.response.operationParams);
-                  assert.equal(false, data.response.isCancelPending);
-                  assert.equal('GRACEFUL', data.response.cancelMode);
-                  assert.equal('object', typeof data.response.error);
-                  assert.equal('object', typeof data.response.resourceChanges);
-                  assert.equal('object', typeof data.response.changedInfo);
-                  assert.equal(true, Array.isArray(data.response.changedExtConnectivity));
-                  assert.equal('object', typeof data.response.modificationsTriggeredByVnfPkgChange);
-                  assert.equal('string', data.response.vnfSnapshotInfoId);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfLcmOpOccs', 'getVnfLcmOpOccsVnfLcmOpOccId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfLcmOpOccsVnfLcmOpOccId('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('STARTING', data.response.operationState);
+                assert.equal('string', data.response.stateEnteredTime);
+                assert.equal('string', data.response.startTime);
+                assert.equal('string', data.response.vnfInstanceId);
+                assert.equal('string', data.response.grantId);
+                assert.equal('REVERT_TO_SNAPSHOT', data.response.operation);
+                assert.equal(true, data.response.isAutomaticInvocation);
+                assert.equal('object', typeof data.response.operationParams);
+                assert.equal(false, data.response.isCancelPending);
+                assert.equal('GRACEFUL', data.response.cancelMode);
+                assert.equal('object', typeof data.response.error);
+                assert.equal('object', typeof data.response.resourceChanges);
+                assert.equal('object', typeof data.response.changedInfo);
+                assert.equal(true, Array.isArray(data.response.changedExtConnectivity));
+                assert.equal('object', typeof data.response.modificationsTriggeredByVnfPkgChange);
+                assert.equal('string', data.response.vnfSnapshotInfoId);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfLcmOpOccsVnfLcmOpOccId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfLcmOpOccs', 'getVnfLcmOpOccsVnfLcmOpOccId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#postVnfLcmOpOccsVnfLcmOpOccIdRetry - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.postVnfLcmOpOccsVnfLcmOpOccIdRetry.task) {
-          try {
-            a.postVnfLcmOpOccsVnfLcmOpOccIdRetry('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfLcmOpOccs', 'postVnfLcmOpOccsVnfLcmOpOccIdRetry', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfLcmOpOccsVnfLcmOpOccIdRetry('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfLcmOpOccsVnfLcmOpOccIdRetry task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfLcmOpOccs', 'postVnfLcmOpOccsVnfLcmOpOccIdRetry', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#postVnfLcmOpOccsVnfLcmOpOccIdRollback - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.postVnfLcmOpOccsVnfLcmOpOccIdRollback.task) {
-          try {
-            a.postVnfLcmOpOccsVnfLcmOpOccIdRollback('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfLcmOpOccs', 'postVnfLcmOpOccsVnfLcmOpOccIdRollback', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfLcmOpOccsVnfLcmOpOccIdRollback('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfLcmOpOccsVnfLcmOpOccIdRollback task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfLcmOpOccs', 'postVnfLcmOpOccsVnfLcmOpOccIdRollback', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#postVnfLcmOpOccsVnfLcmOpOccIdFail - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.postVnfLcmOpOccsVnfLcmOpOccIdFail.task) {
-          try {
-            a.postVnfLcmOpOccsVnfLcmOpOccIdFail('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('STARTING', data.response.operationState);
-                  assert.equal('string', data.response.stateEnteredTime);
-                  assert.equal('string', data.response.startTime);
-                  assert.equal('string', data.response.vnfInstanceId);
-                  assert.equal('string', data.response.grantId);
-                  assert.equal('SCALE', data.response.operation);
-                  assert.equal(false, data.response.isAutomaticInvocation);
-                  assert.equal('object', typeof data.response.operationParams);
-                  assert.equal(false, data.response.isCancelPending);
-                  assert.equal('FORCEFUL', data.response.cancelMode);
-                  assert.equal('object', typeof data.response.error);
-                  assert.equal('object', typeof data.response.resourceChanges);
-                  assert.equal('object', typeof data.response.changedInfo);
-                  assert.equal(true, Array.isArray(data.response.changedExtConnectivity));
-                  assert.equal('object', typeof data.response.modificationsTriggeredByVnfPkgChange);
-                  assert.equal('string', data.response.vnfSnapshotInfoId);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfLcmOpOccs', 'postVnfLcmOpOccsVnfLcmOpOccIdFail', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfLcmOpOccsVnfLcmOpOccIdFail('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('STARTING', data.response.operationState);
+                assert.equal('string', data.response.stateEnteredTime);
+                assert.equal('string', data.response.startTime);
+                assert.equal('string', data.response.vnfInstanceId);
+                assert.equal('string', data.response.grantId);
+                assert.equal('SCALE', data.response.operation);
+                assert.equal(false, data.response.isAutomaticInvocation);
+                assert.equal('object', typeof data.response.operationParams);
+                assert.equal(false, data.response.isCancelPending);
+                assert.equal('FORCEFUL', data.response.cancelMode);
+                assert.equal('object', typeof data.response.error);
+                assert.equal('object', typeof data.response.resourceChanges);
+                assert.equal('object', typeof data.response.changedInfo);
+                assert.equal(true, Array.isArray(data.response.changedExtConnectivity));
+                assert.equal('object', typeof data.response.modificationsTriggeredByVnfPkgChange);
+                assert.equal('string', data.response.vnfSnapshotInfoId);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfLcmOpOccsVnfLcmOpOccIdFail task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfLcmOpOccs', 'postVnfLcmOpOccsVnfLcmOpOccIdFail', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#postVnfLcmOpOccsVnfLcmOpOccIdCancel - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.postVnfLcmOpOccsVnfLcmOpOccIdCancel.task) {
-          try {
-            a.postVnfLcmOpOccsVnfLcmOpOccIdCancel('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfLcmOpOccs', 'postVnfLcmOpOccsVnfLcmOpOccIdCancel', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfLcmOpOccsVnfLcmOpOccIdCancel('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfLcmOpOccsVnfLcmOpOccIdCancel task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfLcmOpOccs', 'postVnfLcmOpOccsVnfLcmOpOccIdCancel', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -2021,99 +1726,81 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#postVnfSnapshots - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.postVnfSnapshots.task) {
-          try {
-            a.postVnfSnapshots(vnfSnapshotsPostVnfSnapshotsBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('string', data.response.vnfSnapshotPkgId);
-                  assert.equal('object', typeof data.response.vnfSnapshot);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfSnapshots', 'postVnfSnapshots', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postVnfSnapshots(vnfSnapshotsPostVnfSnapshotsBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('string', data.response.vnfSnapshotPkgId);
+                assert.equal('object', typeof data.response.vnfSnapshot);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postVnfSnapshots task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfSnapshots', 'postVnfSnapshots', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfSnapshots - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getVnfSnapshots.task) {
-          try {
-            a.getVnfSnapshots(null, null, null, null, null, null, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('object', typeof data.response[0]);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfSnapshots', 'getVnfSnapshots', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfSnapshots(null, null, null, null, null, null, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('object', typeof data.response[0]);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfSnapshots task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfSnapshots', 'getVnfSnapshots', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfSnapshotsVnfSnapshotInfoId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getVnfSnapshotsVnfSnapshotInfoId.task) {
-          try {
-            a.getVnfSnapshotsVnfSnapshotInfoId('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('object', typeof data.response[0]);
-                  assert.equal('object', typeof data.response[1]);
-                  assert.equal('object', typeof data.response[2]);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfSnapshots', 'getVnfSnapshotsVnfSnapshotInfoId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfSnapshotsVnfSnapshotInfoId('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('object', typeof data.response[0]);
+                assert.equal('object', typeof data.response[1]);
+                assert.equal('object', typeof data.response[2]);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfSnapshotsVnfSnapshotInfoId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfSnapshots', 'getVnfSnapshotsVnfSnapshotInfoId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -2432,94 +2119,76 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#patchVnfSnapshotsVnfSnapshotInfoId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.patchVnfSnapshotsVnfSnapshotInfoId.task) {
-          try {
-            a.patchVnfSnapshotsVnfSnapshotInfoId('fakedata', vnfSnapshotsPatchVnfSnapshotsVnfSnapshotInfoIdBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('success', data.response);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfSnapshots', 'patchVnfSnapshotsVnfSnapshotInfoId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.patchVnfSnapshotsVnfSnapshotInfoId('fakedata', vnfSnapshotsPatchVnfSnapshotsVnfSnapshotInfoIdBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('success', data.response);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('patchVnfSnapshotsVnfSnapshotInfoId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfSnapshots', 'patchVnfSnapshotsVnfSnapshotInfoId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#deleteVnfSnapshotsVnfSnapshotInfoId - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.deleteVnfSnapshotsVnfSnapshotInfoId.task) {
-          try {
-            a.deleteVnfSnapshotsVnfSnapshotInfoId('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfSnapshots', 'deleteVnfSnapshotsVnfSnapshotInfoId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.deleteVnfSnapshotsVnfSnapshotInfoId('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('deleteVnfSnapshotsVnfSnapshotInfoId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfSnapshots', 'deleteVnfSnapshotsVnfSnapshotInfoId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfSnapshotsVnfSnapshotInfoIdVnfStateSnapshot - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.getVnfSnapshotsVnfSnapshotInfoIdVnfStateSnapshot.task) {
-          try {
-            a.getVnfSnapshotsVnfSnapshotInfoIdVnfStateSnapshot('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfSnapshots', 'getVnfSnapshotsVnfSnapshotInfoIdVnfStateSnapshot', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfSnapshotsVnfSnapshotInfoIdVnfStateSnapshot('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfSnapshotsVnfSnapshotInfoIdVnfStateSnapshot task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfSnapshots', 'getVnfSnapshotsVnfSnapshotInfoIdVnfStateSnapshot', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -2533,530 +2202,440 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#postGrants - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.postGrants.task) {
-          try {
-            a.postGrants(grantsPostGrantsBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('string', data.response.vnfInstanceId);
-                  assert.equal('string', data.response.vnfLcmOpOccId);
-                  assert.equal('object', typeof data.response.vimConnectionInfo);
-                  assert.equal(true, Array.isArray(data.response.zones));
-                  assert.equal(true, Array.isArray(data.response.zoneGroups));
-                  assert.equal(true, Array.isArray(data.response.addResources));
-                  assert.equal(true, Array.isArray(data.response.tempResources));
-                  assert.equal(true, Array.isArray(data.response.removeResources));
-                  assert.equal(true, Array.isArray(data.response.updateResources));
-                  assert.equal('object', typeof data.response.vimAssets);
-                  assert.equal(true, Array.isArray(data.response.extVirtualLinks));
-                  assert.equal(true, Array.isArray(data.response.extManagedVirtualLinks));
-                  assert.equal('object', typeof data.response.additionalParams);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Grants', 'postGrants', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postGrants(grantsPostGrantsBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('string', data.response.vnfInstanceId);
+                assert.equal('string', data.response.vnfLcmOpOccId);
+                assert.equal('object', typeof data.response.vimConnectionInfo);
+                assert.equal(true, Array.isArray(data.response.zones));
+                assert.equal(true, Array.isArray(data.response.zoneGroups));
+                assert.equal(true, Array.isArray(data.response.addResources));
+                assert.equal(true, Array.isArray(data.response.tempResources));
+                assert.equal(true, Array.isArray(data.response.removeResources));
+                assert.equal(true, Array.isArray(data.response.updateResources));
+                assert.equal('object', typeof data.response.vimAssets);
+                assert.equal(true, Array.isArray(data.response.extVirtualLinks));
+                assert.equal(true, Array.isArray(data.response.extManagedVirtualLinks));
+                assert.equal('object', typeof data.response.additionalParams);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postGrants task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Grants', 'postGrants', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getGrantsGrantId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getGrantsGrantId.task) {
-          try {
-            a.getGrantsGrantId('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('string', data.response.vnfInstanceId);
-                  assert.equal('string', data.response.vnfLcmOpOccId);
-                  assert.equal('object', typeof data.response.vimConnectionInfo);
-                  assert.equal(true, Array.isArray(data.response.zones));
-                  assert.equal(true, Array.isArray(data.response.zoneGroups));
-                  assert.equal(true, Array.isArray(data.response.addResources));
-                  assert.equal(true, Array.isArray(data.response.tempResources));
-                  assert.equal(true, Array.isArray(data.response.removeResources));
-                  assert.equal(true, Array.isArray(data.response.updateResources));
-                  assert.equal('object', typeof data.response.vimAssets);
-                  assert.equal(true, Array.isArray(data.response.extVirtualLinks));
-                  assert.equal(true, Array.isArray(data.response.extManagedVirtualLinks));
-                  assert.equal('object', typeof data.response.additionalParams);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Grants', 'getGrantsGrantId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getGrantsGrantId('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('string', data.response.vnfInstanceId);
+                assert.equal('string', data.response.vnfLcmOpOccId);
+                assert.equal('object', typeof data.response.vimConnectionInfo);
+                assert.equal(true, Array.isArray(data.response.zones));
+                assert.equal(true, Array.isArray(data.response.zoneGroups));
+                assert.equal(true, Array.isArray(data.response.addResources));
+                assert.equal(true, Array.isArray(data.response.tempResources));
+                assert.equal(true, Array.isArray(data.response.removeResources));
+                assert.equal(true, Array.isArray(data.response.updateResources));
+                assert.equal('object', typeof data.response.vimAssets);
+                assert.equal(true, Array.isArray(data.response.extVirtualLinks));
+                assert.equal(true, Array.isArray(data.response.extManagedVirtualLinks));
+                assert.equal('object', typeof data.response.additionalParams);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getGrantsGrantId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Grants', 'getGrantsGrantId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getOnboardedVnfPackages - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getOnboardedVnfPackages.task) {
-          try {
-            a.getOnboardedVnfPackages(null, null, null, null, null, null, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('object', typeof data.response[0]);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('OnboardedVnfPackages', 'getOnboardedVnfPackages', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getOnboardedVnfPackages(null, null, null, null, null, null, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('object', typeof data.response[0]);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getOnboardedVnfPackages task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('OnboardedVnfPackages', 'getOnboardedVnfPackages', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getOnboardedVnfPackagesVnfdId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getOnboardedVnfPackagesVnfdId.task) {
-          try {
-            a.getOnboardedVnfPackagesVnfdId('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('string', data.response.vnfdId);
-                  assert.equal('string', data.response.vnfProvider);
-                  assert.equal('string', data.response.vnfProductName);
-                  assert.equal('string', data.response.vnfSoftwareVersion);
-                  assert.equal('string', data.response.vnfdVersion);
-                  assert.equal(true, Array.isArray(data.response.compatibleSpecificationVersions));
-                  assert.equal('string', data.response.checksum);
-                  assert.equal('OPTION_1', data.response.packageSecurityOption);
-                  assert.equal('string', data.response.signingCertificate);
-                  assert.equal(true, Array.isArray(data.response.softwareImages));
-                  assert.equal(true, Array.isArray(data.response.additionalArtifacts));
-                  assert.equal('UPLOADING', data.response.onboardingState);
-                  assert.equal('DISABLED', data.response.operationalState);
-                  assert.equal('IN_USE', data.response.usageState);
-                  assert.equal('string', data.response.vnfmInfo);
-                  assert.equal('object', typeof data.response.userDefinedData);
-                  assert.equal('object', typeof data.response.onboardingFailureDetails);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('OnboardedVnfPackages', 'getOnboardedVnfPackagesVnfdId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getOnboardedVnfPackagesVnfdId('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('string', data.response.vnfdId);
+                assert.equal('string', data.response.vnfProvider);
+                assert.equal('string', data.response.vnfProductName);
+                assert.equal('string', data.response.vnfSoftwareVersion);
+                assert.equal('string', data.response.vnfdVersion);
+                assert.equal(true, Array.isArray(data.response.compatibleSpecificationVersions));
+                assert.equal('string', data.response.checksum);
+                assert.equal('OPTION_1', data.response.packageSecurityOption);
+                assert.equal('string', data.response.signingCertificate);
+                assert.equal(true, Array.isArray(data.response.softwareImages));
+                assert.equal(true, Array.isArray(data.response.additionalArtifacts));
+                assert.equal('UPLOADING', data.response.onboardingState);
+                assert.equal('DISABLED', data.response.operationalState);
+                assert.equal('IN_USE', data.response.usageState);
+                assert.equal('string', data.response.vnfmInfo);
+                assert.equal('object', typeof data.response.userDefinedData);
+                assert.equal('object', typeof data.response.onboardingFailureDetails);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getOnboardedVnfPackagesVnfdId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('OnboardedVnfPackages', 'getOnboardedVnfPackagesVnfdId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getOnboardedVnfPackagesVnfdIdVnfd - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.getOnboardedVnfPackagesVnfdIdVnfd.task) {
-          try {
-            a.getOnboardedVnfPackagesVnfdIdVnfd('fakedata', null, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('OnboardedVnfPackages', 'getOnboardedVnfPackagesVnfdIdVnfd', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getOnboardedVnfPackagesVnfdIdVnfd('fakedata', null, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getOnboardedVnfPackagesVnfdIdVnfd task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('OnboardedVnfPackages', 'getOnboardedVnfPackagesVnfdIdVnfd', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getOnboardedVnfPackagesVnfdIdManifest - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.getOnboardedVnfPackagesVnfdIdManifest.task) {
-          try {
-            a.getOnboardedVnfPackagesVnfdIdManifest('fakedata', null, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('OnboardedVnfPackages', 'getOnboardedVnfPackagesVnfdIdManifest', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getOnboardedVnfPackagesVnfdIdManifest('fakedata', null, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getOnboardedVnfPackagesVnfdIdManifest task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('OnboardedVnfPackages', 'getOnboardedVnfPackagesVnfdIdManifest', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getOnboardedVnfPackagesVnfdIdPackageContent - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.getOnboardedVnfPackagesVnfdIdPackageContent.task) {
-          try {
-            a.getOnboardedVnfPackagesVnfdIdPackageContent('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('OnboardedVnfPackages', 'getOnboardedVnfPackagesVnfdIdPackageContent', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getOnboardedVnfPackagesVnfdIdPackageContent('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getOnboardedVnfPackagesVnfdIdPackageContent task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('OnboardedVnfPackages', 'getOnboardedVnfPackagesVnfdIdPackageContent', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getOnboardedVnfPackagesVnfdIdArtifacts - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.getOnboardedVnfPackagesVnfdIdArtifacts.task) {
-          try {
-            a.getOnboardedVnfPackagesVnfdIdArtifacts('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('OnboardedVnfPackages', 'getOnboardedVnfPackagesVnfdIdArtifacts', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getOnboardedVnfPackagesVnfdIdArtifacts('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getOnboardedVnfPackagesVnfdIdArtifacts task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('OnboardedVnfPackages', 'getOnboardedVnfPackagesVnfdIdArtifacts', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getOnboardedVnfPackagesVnfdIdArtifactsArtifactPath - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.getOnboardedVnfPackagesVnfdIdArtifactsArtifactPath.task) {
-          try {
-            a.getOnboardedVnfPackagesVnfdIdArtifactsArtifactPath('fakedata', 'fakedata', null, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('OnboardedVnfPackages', 'getOnboardedVnfPackagesVnfdIdArtifactsArtifactPath', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getOnboardedVnfPackagesVnfdIdArtifactsArtifactPath('fakedata', 'fakedata', null, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getOnboardedVnfPackagesVnfdIdArtifactsArtifactPath task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('OnboardedVnfPackages', 'getOnboardedVnfPackagesVnfdIdArtifactsArtifactPath', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfPackagesVnfPkgId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getVnfPackagesVnfPkgId.task) {
-          try {
-            a.getVnfPackagesVnfPkgId('fakedata', null, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('string', data.response.vnfdId);
-                  assert.equal('string', data.response.vnfProvider);
-                  assert.equal('string', data.response.vnfProductName);
-                  assert.equal('string', data.response.vnfSoftwareVersion);
-                  assert.equal('string', data.response.vnfdVersion);
-                  assert.equal(true, Array.isArray(data.response.compatibleSpecificationVersions));
-                  assert.equal('string', data.response.checksum);
-                  assert.equal('OPTION_1', data.response.packageSecurityOption);
-                  assert.equal('string', data.response.signingCertificate);
-                  assert.equal(true, Array.isArray(data.response.softwareImages));
-                  assert.equal(true, Array.isArray(data.response.additionalArtifacts));
-                  assert.equal('UPLOADING', data.response.onboardingState);
-                  assert.equal('DISABLED', data.response.operationalState);
-                  assert.equal('NOT_IN_USE', data.response.usageState);
-                  assert.equal('string', data.response.vnfmInfo);
-                  assert.equal('object', typeof data.response.userDefinedData);
-                  assert.equal('object', typeof data.response.onboardingFailureDetails);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfPackages', 'getVnfPackagesVnfPkgId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfPackagesVnfPkgId('fakedata', null, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('string', data.response.vnfdId);
+                assert.equal('string', data.response.vnfProvider);
+                assert.equal('string', data.response.vnfProductName);
+                assert.equal('string', data.response.vnfSoftwareVersion);
+                assert.equal('string', data.response.vnfdVersion);
+                assert.equal(true, Array.isArray(data.response.compatibleSpecificationVersions));
+                assert.equal('string', data.response.checksum);
+                assert.equal('OPTION_1', data.response.packageSecurityOption);
+                assert.equal('string', data.response.signingCertificate);
+                assert.equal(true, Array.isArray(data.response.softwareImages));
+                assert.equal(true, Array.isArray(data.response.additionalArtifacts));
+                assert.equal('UPLOADING', data.response.onboardingState);
+                assert.equal('DISABLED', data.response.operationalState);
+                assert.equal('NOT_IN_USE', data.response.usageState);
+                assert.equal('string', data.response.vnfmInfo);
+                assert.equal('object', typeof data.response.userDefinedData);
+                assert.equal('object', typeof data.response.onboardingFailureDetails);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfPackagesVnfPkgId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfPackages', 'getVnfPackagesVnfPkgId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfPackagesVnfPkgIdVnfd - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.getVnfPackagesVnfPkgIdVnfd.task) {
-          try {
-            a.getVnfPackagesVnfPkgIdVnfd('fakedata', null, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfPackages', 'getVnfPackagesVnfPkgIdVnfd', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfPackagesVnfPkgIdVnfd('fakedata', null, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfPackagesVnfPkgIdVnfd task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfPackages', 'getVnfPackagesVnfPkgIdVnfd', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfPackagesVnfPkgIdManifest - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.getVnfPackagesVnfPkgIdManifest.task) {
-          try {
-            a.getVnfPackagesVnfPkgIdManifest('fakedata', null, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfPackages', 'getVnfPackagesVnfPkgIdManifest', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfPackagesVnfPkgIdManifest('fakedata', null, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfPackagesVnfPkgIdManifest task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfPackages', 'getVnfPackagesVnfPkgIdManifest', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfPackagesVnfPkgIdPackageContent - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.getVnfPackagesVnfPkgIdPackageContent.task) {
-          try {
-            a.getVnfPackagesVnfPkgIdPackageContent('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfPackages', 'getVnfPackagesVnfPkgIdPackageContent', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfPackagesVnfPkgIdPackageContent('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfPackagesVnfPkgIdPackageContent task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfPackages', 'getVnfPackagesVnfPkgIdPackageContent', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfPackagesVnfPkgIdArtifacts - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.getVnfPackagesVnfPkgIdArtifacts.task) {
-          try {
-            a.getVnfPackagesVnfPkgIdArtifacts('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfPackages', 'getVnfPackagesVnfPkgIdArtifacts', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfPackagesVnfPkgIdArtifacts('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfPackagesVnfPkgIdArtifacts task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfPackages', 'getVnfPackagesVnfPkgIdArtifacts', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfPackagesVnfPkgIdArtifactsArtifactPath - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.getVnfPackagesVnfPkgIdArtifactsArtifactPath.task) {
-          try {
-            a.getVnfPackagesVnfPkgIdArtifactsArtifactPath('fakedata', 'fakedata', null, (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfPackages', 'getVnfPackagesVnfPkgIdArtifactsArtifactPath', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfPackagesVnfPkgIdArtifactsArtifactPath('fakedata', 'fakedata', null, (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfPackagesVnfPkgIdArtifactsArtifactPath task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfPackages', 'getVnfPackagesVnfPkgIdArtifactsArtifactPath', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -3070,203 +2649,167 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#postPmJobs - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.postPmJobs.task) {
-          try {
-            a.postPmJobs(pmJobsPostPmJobsBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('string', data.response.objectType);
-                  assert.equal(true, Array.isArray(data.response.objectInstanceIds));
-                  assert.equal(true, Array.isArray(data.response.subObjectInstanceIds));
-                  assert.equal('object', typeof data.response.criteria);
-                  assert.equal('string', data.response.callbackUri);
-                  assert.equal('object', typeof data.response.reports);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('PmJobs', 'postPmJobs', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postPmJobs(pmJobsPostPmJobsBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('string', data.response.objectType);
+                assert.equal(true, Array.isArray(data.response.objectInstanceIds));
+                assert.equal(true, Array.isArray(data.response.subObjectInstanceIds));
+                assert.equal('object', typeof data.response.criteria);
+                assert.equal('string', data.response.callbackUri);
+                assert.equal('object', typeof data.response.reports);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postPmJobs task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('PmJobs', 'postPmJobs', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getPmJobs - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getPmJobs.task) {
-          try {
-            a.getPmJobs(null, null, null, null, null, null, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('object', typeof data.response[0]);
-                  assert.equal('object', typeof data.response[1]);
-                  assert.equal('object', typeof data.response[2]);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('PmJobs', 'getPmJobs', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getPmJobs(null, null, null, null, null, null, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('object', typeof data.response[0]);
+                assert.equal('object', typeof data.response[1]);
+                assert.equal('object', typeof data.response[2]);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getPmJobs task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('PmJobs', 'getPmJobs', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getPmJobsPmJobId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getPmJobsPmJobId.task) {
-          try {
-            a.getPmJobsPmJobId('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('string', data.response.objectType);
-                  assert.equal(true, Array.isArray(data.response.objectInstanceIds));
-                  assert.equal(true, Array.isArray(data.response.subObjectInstanceIds));
-                  assert.equal('object', typeof data.response.criteria);
-                  assert.equal('string', data.response.callbackUri);
-                  assert.equal('object', typeof data.response.reports);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('PmJobs', 'getPmJobsPmJobId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getPmJobsPmJobId('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('string', data.response.objectType);
+                assert.equal(true, Array.isArray(data.response.objectInstanceIds));
+                assert.equal(true, Array.isArray(data.response.subObjectInstanceIds));
+                assert.equal('object', typeof data.response.criteria);
+                assert.equal('string', data.response.callbackUri);
+                assert.equal('object', typeof data.response.reports);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getPmJobsPmJobId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('PmJobs', 'getPmJobsPmJobId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#patchPmJobsPmJobId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.patchPmJobsPmJobId.task) {
-          try {
-            a.patchPmJobsPmJobId('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('success', data.response);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('PmJobs', 'patchPmJobsPmJobId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.patchPmJobsPmJobId('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('success', data.response);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('patchPmJobsPmJobId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('PmJobs', 'patchPmJobsPmJobId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#deletePmJobsPmJobId - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.deletePmJobsPmJobId.task) {
-          try {
-            a.deletePmJobsPmJobId('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('PmJobs', 'deletePmJobsPmJobId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.deletePmJobsPmJobId('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('deletePmJobsPmJobId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('PmJobs', 'deletePmJobsPmJobId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getPmJobsPmJobIdReportsReportId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getPmJobsPmJobIdReportsReportId.task) {
-          try {
-            a.getPmJobsPmJobIdReportsReportId('fakedata', 'fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal(true, Array.isArray(data.response.entries));
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('PmJobs', 'getPmJobsPmJobIdReportsReportId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getPmJobsPmJobIdReportsReportId('fakedata', 'fakedata', (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal(true, Array.isArray(data.response.entries));
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getPmJobsPmJobIdReportsReportId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('PmJobs', 'getPmJobsPmJobIdReportsReportId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
@@ -3278,320 +2821,259 @@ describe('[integration] Etsi_sol003 Adapter Test', () => {
     };
     describe('#postThresholds - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.postThresholds.task) {
-          try {
-            a.postThresholds(thresholdsPostThresholdsBodyParam, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('string', data.response.objectType);
-                  assert.equal('string', data.response.objectInstanceId);
-                  assert.equal(true, Array.isArray(data.response.subObjectInstanceIds));
-                  assert.equal('object', typeof data.response.criteria);
-                  assert.equal('string', data.response.callbackUri);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Thresholds', 'postThresholds', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.postThresholds(thresholdsPostThresholdsBodyParam, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('string', data.response.objectType);
+                assert.equal('string', data.response.objectInstanceId);
+                assert.equal(true, Array.isArray(data.response.subObjectInstanceIds));
+                assert.equal('object', typeof data.response.criteria);
+                assert.equal('string', data.response.callbackUri);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('postThresholds task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Thresholds', 'postThresholds', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getThresholds - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getThresholds.task) {
-          try {
-            a.getThresholds(null, null, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('object', typeof data.response[0]);
-                  assert.equal('object', typeof data.response[1]);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Thresholds', 'getThresholds', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getThresholds(null, null, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('object', typeof data.response[0]);
+                assert.equal('object', typeof data.response[1]);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getThresholds task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Thresholds', 'getThresholds', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getThresholdsThresholdId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getThresholdsThresholdId.task) {
-          try {
-            a.getThresholdsThresholdId('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('string', data.response.objectType);
-                  assert.equal('string', data.response.objectInstanceId);
-                  assert.equal(true, Array.isArray(data.response.subObjectInstanceIds));
-                  assert.equal('object', typeof data.response.criteria);
-                  assert.equal('string', data.response.callbackUri);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Thresholds', 'getThresholdsThresholdId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getThresholdsThresholdId('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('string', data.response.objectType);
+                assert.equal('string', data.response.objectInstanceId);
+                assert.equal(true, Array.isArray(data.response.subObjectInstanceIds));
+                assert.equal('object', typeof data.response.criteria);
+                assert.equal('string', data.response.callbackUri);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getThresholdsThresholdId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Thresholds', 'getThresholdsThresholdId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#patchThresholdsThresholdId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.patchThresholdsThresholdId.task) {
-          try {
-            a.patchThresholdsThresholdId('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('success', data.response);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Thresholds', 'patchThresholdsThresholdId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.patchThresholdsThresholdId('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('success', data.response);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('patchThresholdsThresholdId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Thresholds', 'patchThresholdsThresholdId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#deleteThresholdsThresholdId - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.deleteThresholdsThresholdId.task) {
-          try {
-            a.deleteThresholdsThresholdId('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('Thresholds', 'deleteThresholdsThresholdId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.deleteThresholdsThresholdId('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('deleteThresholdsThresholdId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('Thresholds', 'deleteThresholdsThresholdId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfSnapshotPackages - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getVnfSnapshotPackages.task) {
-          try {
-            a.getVnfSnapshotPackages(null, null, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('object', typeof data.response[0]);
-                  assert.equal('object', typeof data.response[1]);
-                  assert.equal('object', typeof data.response[2]);
-                  assert.equal('object', typeof data.response[3]);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfSnapshotPackages', 'getVnfSnapshotPackages', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfSnapshotPackages(null, null, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('object', typeof data.response[0]);
+                assert.equal('object', typeof data.response[1]);
+                assert.equal('object', typeof data.response[2]);
+                assert.equal('object', typeof data.response[3]);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfSnapshotPackages task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfSnapshotPackages', 'getVnfSnapshotPackages', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfSnapshotPackagesVnfSnapshotPkgId - errors', () => {
       it('should work if integrated or standalone with mockdata', (done) => {
-        if (pronghorn.methodsByName.getVnfSnapshotPackagesVnfSnapshotPkgId.task) {
-          try {
-            a.getVnfSnapshotPackagesVnfSnapshotPkgId('fakedata', null, null, (data, error) => {
-              try {
-                if (stub) {
-                  runCommonAsserts(data, error);
-                  assert.equal('string', data.response.id);
-                  assert.equal('string', data.response.vnfSnapshotPkgUniqueId);
-                  assert.equal('string', data.response.name);
-                  assert.equal('string', data.response.checksum);
-                  assert.equal('string', data.response.createdAt);
-                  assert.equal('string', data.response.vnfSnapshotId);
-                  assert.equal('object', typeof data.response.vnfcSnapshotInfoIds);
-                  assert.equal(false, data.response.isFullSnapshot);
-                  assert.equal('object', typeof data.response.vnfdInfo);
-                  assert.equal('object', typeof data.response.vnfsr);
-                  assert.equal('object', typeof data.response.vnfcSnapshotImages);
-                  assert.equal('object', typeof data.response.additionalArtifacts);
-                  assert.equal('BUILDING', data.response.state);
-                  assert.equal(true, data.response.isCancelPending);
-                  assert.equal('object', typeof data.response.failureDetails);
-                  assert.equal('object', typeof data.response.userDefinedData);
-                  assert.equal('object', typeof data.response._links);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfSnapshotPackages', 'getVnfSnapshotPackagesVnfSnapshotPkgId', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfSnapshotPackagesVnfSnapshotPkgId('fakedata', null, null, (data, error) => {
+            try {
+              if (stub) {
+                runCommonAsserts(data, error);
+                assert.equal('string', data.response.id);
+                assert.equal('string', data.response.vnfSnapshotPkgUniqueId);
+                assert.equal('string', data.response.name);
+                assert.equal('string', data.response.checksum);
+                assert.equal('string', data.response.createdAt);
+                assert.equal('string', data.response.vnfSnapshotId);
+                assert.equal('object', typeof data.response.vnfcSnapshotInfoIds);
+                assert.equal(false, data.response.isFullSnapshot);
+                assert.equal('object', typeof data.response.vnfdInfo);
+                assert.equal('object', typeof data.response.vnfsr);
+                assert.equal('object', typeof data.response.vnfcSnapshotImages);
+                assert.equal('object', typeof data.response.additionalArtifacts);
+                assert.equal('BUILDING', data.response.state);
+                assert.equal(true, data.response.isCancelPending);
+                assert.equal('object', typeof data.response.failureDetails);
+                assert.equal('object', typeof data.response.userDefinedData);
+                assert.equal('object', typeof data.response._links);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfSnapshotPackagesVnfSnapshotPkgId task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfSnapshotPackages', 'getVnfSnapshotPackagesVnfSnapshotPkgId', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfSnapshotPackagesVnfSnapshotPkgIdPackageContent - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.getVnfSnapshotPackagesVnfSnapshotPkgIdPackageContent.task) {
-          try {
-            a.getVnfSnapshotPackagesVnfSnapshotPkgIdPackageContent('fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfSnapshotPackages', 'getVnfSnapshotPackagesVnfSnapshotPkgIdPackageContent', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfSnapshotPackagesVnfSnapshotPkgIdPackageContent('fakedata', (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfSnapshotPackagesVnfSnapshotPkgIdPackageContent task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfSnapshotPackages', 'getVnfSnapshotPackagesVnfSnapshotPkgIdPackageContent', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
     });
 
     describe('#getVnfSnapshotPackagesVnfSnapshotPkgIdArtifactsArtifactPath - errors', () => {
       it('should work if integrated but since no mockdata should error when run standalone', (done) => {
-        if (pronghorn.methodsByName.getVnfSnapshotPackagesVnfSnapshotPkgIdArtifactsArtifactPath.task) {
-          try {
-            a.getVnfSnapshotPackagesVnfSnapshotPkgIdArtifactsArtifactPath('fakedata', 'fakedata', (data, error) => {
-              try {
-                if (stub) {
-                  const displayE = 'Error 400 received on request';
-                  runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
-                } else {
-                  runCommonAsserts(data, error);
-                }
-                saveMockData('VnfSnapshotPackages', 'getVnfSnapshotPackagesVnfSnapshotPkgIdArtifactsArtifactPath', 'default', data);
-                done();
-              } catch (err) {
-                log.error(`Test Failure: ${err}`);
-                done(err);
+        try {
+          a.getVnfSnapshotPackagesVnfSnapshotPkgIdArtifactsArtifactPath('fakedata', 'fakedata', (data, error) => {
+            try {
+              if (stub) {
+                const displayE = 'Error 400 received on request';
+                runErrorAsserts(data, error, 'AD.500', 'Test-etsi_sol003-connectorRest-handleEndResponse', displayE);
+              } else {
+                runCommonAsserts(data, error);
               }
-            });
-          } catch (error) {
-            log.error(`Adapter Exception: ${error}`);
-            done(error);
-          }
-        } else {
-          log.error('getVnfSnapshotPackagesVnfSnapshotPkgIdArtifactsArtifactPath task is false, skipping test');
-          skipCount += 1;
-          done();
-        }// end if task
+              saveMockData('VnfSnapshotPackages', 'getVnfSnapshotPackagesVnfSnapshotPkgIdArtifactsArtifactPath', 'default', data);
+              done();
+            } catch (err) {
+              log.error(`Test Failure: ${err}`);
+              done(err);
+            }
+          });
+        } catch (error) {
+          log.error(`Adapter Exception: ${error}`);
+          done(error);
+        }
       }).timeout(attemptTimeout);
-    });
-
-    describe('#Skipped test count', () => {
-      it('count skipped tests', (done) => {
-        console.log(`skipped ${skipCount} tests because \x1b[33mtask: false\x1b[0m`);
-        done();
-      });
     });
   });
 });
