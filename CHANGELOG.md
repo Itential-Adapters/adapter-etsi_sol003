@@ -1,4 +1,12 @@
 
+## 0.3.1 [12-27-2023]
+
+* fix meta
+
+See merge request itentialopensource/adapters/cloud/adapter-etsi_sol003!3
+
+---
+
 ## 0.3.0 [12-27-2023]
 
 * Adapter Engine has been updated and the changes are being migrated to the adapter
