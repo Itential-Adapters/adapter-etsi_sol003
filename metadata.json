@@ -16,8 +16,28 @@
   "domains": [
     "Cloud"
   ],
-  "tags": [],
-  "useCases": [],
+  "tags": [
+    "Cloud Infrastructure Changes",
+    "Hybrid & Multi Cloud Orchestration",
+    "Configuration & Compliance",
+    "Software Upgrades & Device Maintenance"
+  ],
+  "useCases": [
+    "VNet or VPC deploy/management",
+    "Connect VPC and VNet",
+    "Connect router to transit gateway",
+    "Route across GCP & Azure",
+    "Connect sites across cloud platforms",
+    "Router configuration backup or restore",
+    "Run network compliance checks and remediation",
+    "Determine configuration drift",
+    "Golden Configuration",
+    "Port Turn-up",
+    "Assign Network & IP",
+    "Cloud Managed Networks",
+    "Software Upgrade",
+    "Device Onboarding"
+  ],
   "deprecated": {
     "isDeprecated": false
   },
