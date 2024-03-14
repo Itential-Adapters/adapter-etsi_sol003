@@ -1,8 +1,8 @@
 {
   "name": "adapter-etsi_sol003",
-  "webName": "Adapter for Integration to ETSI SOL003",
+  "webName": "Adapter for Integration to ETSI NFV-SOL 003",
   "vendor": "ETSI",
-  "product": "SOL003",
+  "product": "NFV-SOL 003",
   "osVersion": [],
   "apiVersions": [],
   "iapVersions": [
