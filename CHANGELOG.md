@@ -1,4 +1,12 @@
 
+## 0.3.5 [03-28-2024]
+
+* Changes made at 2024.03.28_13:15PM
+
+See merge request itentialopensource/adapters/cloud/adapter-etsi_sol003!7
+
+---
+
 ## 0.3.4 [03-15-2024]
 
 * Update metadata.json
