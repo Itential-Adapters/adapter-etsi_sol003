@@ -4,7 +4,7 @@
   "description": "This adapter integrates with system described as: ETSI sol003",
   "main": "adapter.js",
   "wizardVersion": "2.44.7",
-  "engineVersion": "1.67.14",
+  "engineVersion": "1.67.20",
   "adapterType": "http",
   "scripts": {
     "artifactize": "npm i && node utils/packModificationScript.js",
@@ -15,7 +15,6 @@
     "test:baseunit": "mocha test/unit/adapterBaseTestUnit.js --LOG=error",
     "test:unit": "mocha test/unit/adapterTestUnit.js --LOG=error",
     "test:integration": "mocha test/integration/adapterTestIntegration.js --LOG=error",
-    "test:cover": "nyc --reporter html --reporter text mocha --reporter dot test/*",
     "adapter:patches2bundled": "node utils/patches2bundledDeps.js",
     "test": "npm run test:baseunit && npm run test:unit && npm run test:integration",
     "adapter:install": "npm i && node utils/tbScript.js install",
@@ -55,7 +54,7 @@
   "author": "Itential",
   "homepage": "https://gitlab.com/itentialopensource/adapters/cloud/adapter-etsi_sol003#readme",
   "dependencies": {
-    "@itentialopensource/adapter-utils": "^5.3.10",
+    "@itentialopensource/adapter-utils": "^5.5.0",
     "acorn": "^8.10.0",
     "ajv": "^8.12.0",
     "axios": "^1.6.8",
