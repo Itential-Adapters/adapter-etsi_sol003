@@ -44,15 +44,15 @@
   ],
   "license": "Apache-2.0",
   "engines": {
-    "node": ">= 8.0.0",
+    "node": ">= 14.0.0",
     "npm": ">= 6.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "git@gitlab.com:itentialopensource/adapters/cloud/adapter-etsi_sol003.git"
+    "url": "git@gitlab.com:itentialopensource/adapters/adapter-etsi_sol003.git"
   },
   "author": "Itential",
-  "homepage": "https://gitlab.com/itentialopensource/adapters/cloud/adapter-etsi_sol003#readme",
+  "homepage": "https://gitlab.com/itentialopensource/adapters/adapter-etsi_sol003#readme",
   "dependencies": {
     "@itentialopensource/adapter-utils": "^5.5.0",
     "acorn": "^8.10.0",
@@ -65,7 +65,6 @@
     "mocha": "^10.3.0",
     "mocha-param": "^2.0.1",
     "mongodb": "^4.16.0",
-    "nyc": "^15.1.0",
     "ping": "^0.4.4",
     "prompts": "^2.4.2",
     "readline-sync": "^1.4.10",

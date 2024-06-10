@@ -42,20 +42,42 @@
     "isDeprecated": false
   },
   "brokerSince": "",
+  "authMethods": [
+    {
+      "type": "OAuth",
+      "primary": true
+    }
+  ],
   "documentation": {
     "storeLink": "",
     "npmLink": "https://www.npmjs.com/package/@itentialopensource/adapter-etsi_sol003",
-    "repoLink": "https://gitlab.com/itentialopensource/adapters/cloud/adapter-etsi_sol003",
+    "repoLink": "https://gitlab.com/itentialopensource/adapters/adapter-etsi_sol003",
     "docLink": "https://docs.itential.com/opensource/docs/etsi-standard-sol003",
     "demoLinks": [],
-    "trainingLinks": [],
+    "trainingLinks": [
+      {
+        "title": "Itential Academy",
+        "link": "https://www.itential.com/itential-academy/"
+      }
+    ],
     "faqLink": "https://docs.itential.com/opensource/docs/troubleshooting-an-adapter",
     "contributeLink": "https://gitlab.com/itentialopensource/adapters/contributing-guide",
     "issueLink": "https://itential.atlassian.net/servicedesk/customer/portals",
     "webLink": "https://www.itential.com/adapters/etsi-sol003/",
-    "vendorLink": "",
-    "productLink": "",
-    "apiLinks": []
+    "vendorLink": "https://www.etsi.org/",
+    "productLink": "https://www.etsi.org/deliver/etsi_gs/NFV-SOL/001_099/003/03.03.01_60/gs_nfv-sol003v030301p.pdf",
+    "apiLinks": [
+      {
+        "title": "ETSI GS NFV-SOL 003 V3.3.1",
+        "link": "https://www.etsi.org/deliver/etsi_gs/NFV-SOL/001_099/003/03.03.01_60/gs_nfv-sol003v030301p.pdf",
+        "public": true
+      },
+      {
+        "title": "SOL OpenAPI Representations",
+        "link": "https://nfvwiki.etsi.org/index.php?title=SOL_OpenAPI_Representations",
+        "public": true
+      }
+    ]
   },
   "assets": [],
   "relatedItems": {
