@@ -4,7 +4,7 @@
       "name": "getToken",
       "protocol": "REST",
       "method": "POST",
-      "entitypath": "{base_path}/{version}/login",
+      "entitypath": "{base_path}/{version}/oauth2/token",
       "requestSchema": "schemaTokenReq.json",
       "responseSchema": "schemaTokenResp.json",
       "timeout": 0,

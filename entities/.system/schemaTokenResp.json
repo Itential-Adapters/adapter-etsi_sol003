@@ -46,7 +46,7 @@
         "type": "AES",
         "key": ""
       },
-      "external_name": "token"
+      "external_name": "access_token"
     }
   },
   "definitions": {}
