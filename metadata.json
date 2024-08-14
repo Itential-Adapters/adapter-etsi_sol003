@@ -77,7 +77,9 @@
         "link": "https://nfvwiki.etsi.org/index.php?title=SOL_OpenAPI_Representations",
         "public": true
       }
-    ]
+    ],
+    "workshopLinks": [],
+    "workshopHomePage": "https://www.itential.com/get-started/"
   },
   "assets": [],
   "relatedItems": {
@@ -88,5 +90,6 @@
     "transformationProjects": [],
     "exampleProjects": []
   },
-  "supportLevel": "community"
+  "supportLevel": "community",
+  "techAlliance": false
 }
