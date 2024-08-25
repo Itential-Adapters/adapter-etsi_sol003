@@ -135,7 +135,7 @@
             "ostypePrefix": "meraki-",
             "port": "{port}",
             "ipaddress": "{ip_addr}",
-            "serial" : "{serial}"
+            "serial": "{serial}"
           }
         }
       ],
@@ -161,7 +161,7 @@
             "ostypePrefix": "meraki-",
             "port": "{port}",
             "ipaddress": "{ip_addr}",
-            "serial" : "{serial}",
+            "serial": "{serial}",
             "id": "{myid}"
           }
         }
@@ -245,7 +245,7 @@
                 "ostypePrefix": "meraki-",
                 "port": "{port}",
                 "ipaddress": "{ip_addr}",
-                "serial" : "{serial}",
+                "serial": "{serial}",
                 "id": "{myid}"
               }
             }
