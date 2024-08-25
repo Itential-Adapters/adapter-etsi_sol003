@@ -1,8 +1,10 @@
 {
   "name": "adapter-etsi_sol003",
   "webName": "Adapter for Integration to ETSI NFV-SOL 003",
+  "supportLevel": "community",
   "vendor": "ETSI",
   "product": "NFV-SOL 003",
+  "techAlliance": false,
   "osVersion": [],
   "apiVersions": [],
   "iapVersions": [
@@ -52,7 +54,7 @@
     "storeLink": "",
     "npmLink": "https://www.npmjs.com/package/@itentialopensource/adapter-etsi_sol003",
     "repoLink": "https://gitlab.com/itentialopensource/adapters/adapter-etsi_sol003",
-    "docLink": "https://docs.itential.com/opensource/docs/etsi-standard-sol003",
+    "docLink": "https://gitlab.com/itentialopensource/adapters/adapter-etsi_sol003/-/blob/master/README.md?ref_type=heads",
     "demoLinks": [],
     "trainingLinks": [
       {
@@ -89,7 +91,5 @@
     "workflowProjects": [],
     "transformationProjects": [],
     "exampleProjects": []
-  },
-  "supportLevel": "community",
-  "techAlliance": false
+  }
 }
