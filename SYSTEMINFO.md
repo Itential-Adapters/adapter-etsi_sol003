@@ -10,7 +10,7 @@ Product Page: https://www.etsi.org/deliver/etsi_gs/NFV-SOL/001_099/003/03.03.01_
 We classify ETSI NFV-SOL 003 into the Cloud domain as ETSI NFV-SOL 003 provides capabilities to orchestrate and manage Virtualized Network Functions (VNFs) within cloud environments.
 
 ## Why Integrate
-The ETSI NFV-SOL 003 adapter from Itential is used to integrate the Itential Automation Platform (IAP) with ETSI NFV-SOL 003 to facilitate automation and resource optimization. 
+The ETSI NFV-SOL 003 adapter from Itential is used to integrate the Itential Platform with ETSI NFV-SOL 003 to facilitate automation and resource optimization. 
 
 With this adapter you have the ability to perform operations with ETSI NFV-SOL 003 such as:
 - Alarms
