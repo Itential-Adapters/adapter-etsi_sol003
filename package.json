@@ -1,6 +1,6 @@
 {
   "name": "@itentialopensource/adapter-etsi_sol003",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "This adapter integrates with system described as: ETSI sol003",
   "main": "adapter.js",
   "wizardVersion": "3.12.1",

@@ -1,4 +1,12 @@
 
+## 0.9.2 [02-23-2026]
+
+* Changes made at 2026.02.22_16:03PM
+
+See merge request itentialopensource/adapters/adapter-etsi_sol003!33
+
+---
+
 ## 0.9.1 [02-17-2026]
 
 * Changes made at 2026.02.16_18:43PM
