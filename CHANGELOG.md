@@ -1,4 +1,12 @@
 
+## 1.0.0 [04-13-2026]
+
+* Security Fixes Requiring Node >= 20.19.x made at 2026.04.13_08:57AM
+
+See merge request itentialopensource/adapters/adapter-etsi_sol003!36
+
+---
+
 ## 0.9.4 [03-23-2026]
 
 * Changes made at 2026.03.23_12:00PM
